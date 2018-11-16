@@ -35,21 +35,24 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public Customer updateCustomer(Long customerId, @Valid Customer theCustomer) {
-		Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new ResourceNotFoundException("Customer", "id", customerId));
-		customer.setFirstName(theCustomer.getFirstName());
-		customer.setLastName(theCustomer.getLastName());
-		customer.setEmail(theCustomer.getEmail());
-
-	    Customer updatedCustomer = customerRepository.save(customer);
-	    return updatedCustomer;
+		return customerRepository.findById(customerId)
+				.map(customer -> {
+					customer.setFirstName(theCustomer.getFirstName());
+					customer.setLastName(theCustomer.getLastName());
+					customer.setEmail(theCustomer.getEmail());
+				    return customerRepository.save(customer);
+				})
+				.orElseThrow(() -> new ResourceNotFoundException("Customer", "id", customerId));
 	}
 
 	@Override
 	public ResponseEntity<?> deleteCustomer(Long customerId) {
-		Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new ResourceNotFoundException("Customer", "id", customerId));
+		return customerRepository.findById(customerId)
+				.map(customer -> {
+					customerRepository.delete(customer);
+					return ResponseEntity.ok().build();
+				})
+				.orElseThrow(() -> new ResourceNotFoundException("Customer", "id", customerId));
 
-		customerRepository.delete(customer);
-
-	    return ResponseEntity.ok().build();
 	}
 }
