@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.http.ResponseEntity;
+
 import com.zubala.crmcustomer.entity.Customer;
 
 public interface CustomerService {
@@ -13,5 +15,9 @@ public interface CustomerService {
 	Customer addNewCustomer(@Valid Customer newCustomer);
 
 	Customer findById(Long customerId);
+
+	Customer updateCustomer(Long customerId, @Valid Customer theCustomer);
+
+	ResponseEntity<?> deleteCustomer(Long customerId);
 
 }
