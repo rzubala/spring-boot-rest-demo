@@ -36,7 +36,7 @@ public class Customer {
 
     @Min(value = 2)
     @NotBlank
-    private String secondName;
+    private String lastName;
     
     @Email
     @NotBlank
@@ -68,14 +68,6 @@ public class Customer {
 		this.firstName = firstName;
 	}
 
-	public String getSecondName() {
-		return secondName;
-	}
-
-	public void setSecondName(String secondName) {
-		this.secondName = secondName;
-	}
-
 	public String getEmail() {
 		return email;
 	}
@@ -98,5 +90,13 @@ public class Customer {
 
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 }
