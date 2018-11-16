@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,4 +31,9 @@ public class CustomerController {
 	Customer addNewCustomer(@Valid @RequestBody Customer newCustomer) {
 		return customerService.addNewCustomer(newCustomer);
 	}
+	
+	@GetMapping("/customers/{id}")
+	public Customer getCustomerById(@PathVariable(value = "id") Long customerId) {
+	    return customerService.findById(customerId);
+	}	
 }

@@ -12,4 +12,6 @@ public interface CustomerService {
 
 	Customer addNewCustomer(@Valid Customer newCustomer);
 
+	Customer findById(Long customerId);
+
 }
