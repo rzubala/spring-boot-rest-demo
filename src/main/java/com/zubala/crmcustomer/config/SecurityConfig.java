@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.zubala.crmcustomer.security.CustomUserDetailsService;
+import com.zubala.crmcustomer.security.NoAuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
@@ -34,6 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+    
+    @Autowired
+    private NoAuthenticationEntryPoint unauthorizedHandler;
 
 	@Bean
     public PasswordEncoder passwordEncoder() {
@@ -54,6 +58,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	            .and()
 	        .csrf()
 	            .disable()
+            .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+            	.and()
 	        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 	            .and()
 	        .authorizeRequests()

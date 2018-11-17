@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +28,7 @@ public class CustomerController {
 	@GetMapping("/customers")
 	//@Secured({"ROLE_USER", "ROLE_ADMIN"})
 	//@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	//@RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
 	Page<Customer> getAllCustomers(Pageable pageable) {
 		return customerService.getAllCustomers(pageable);
 	}
