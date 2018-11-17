@@ -12,8 +12,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.zubala.crmcustomer.security.CustomUserDetailsService;
+import com.zubala.crmcustomer.security.JwtAuthenticationFilter;
 import com.zubala.crmcustomer.security.NoAuthenticationEntryPoint;
 
 @Configuration
@@ -34,6 +36,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+	
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter();
     }
 
 	@Override
@@ -65,10 +72,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	                "/**/*.css",
 	                "/**/*.js")
 	                .permitAll()
+	            .antMatchers("/api/customers/**").hasAnyRole("USER", "ADMIN")
+	            .antMatchers(HttpMethod.GET, "/api/auth/token").hasAnyRole("USER", "ADMIN")
 	            .antMatchers("/api/auth/**").permitAll()
-	            .antMatchers(HttpMethod.GET, "/api/customers").hasAnyRole("USER", "ADMIN")
 	            .anyRequest().authenticated()
 				.and()
 				.httpBasic();
+		
+		// Add our custom JWT security filter
+        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }

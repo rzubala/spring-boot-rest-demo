@@ -24,7 +24,7 @@ public class CustomerController {
 
 	@Autowired
 	private CustomerService customerService;
-
+	
 	@GetMapping("/customers")
 	//@Secured({"ROLE_USER", "ROLE_ADMIN"})
 	//@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")

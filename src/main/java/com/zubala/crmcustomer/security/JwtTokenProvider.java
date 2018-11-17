@@ -30,18 +30,22 @@ public class JwtTokenProvider {
 	public String generateToken(Authentication authentication) {
 
 		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+		return generateTokenByUserId(userPrincipal.getId());
 
+	}
+
+	public String generateTokenByUserId(Long id) {
 		Date now = new Date();
 		Date expiryDate = new Date(now.getTime() + expirationInMs);
 
 		return Jwts.builder()
-				.setSubject(Long.toString(userPrincipal.getId()))
+				.setSubject(Long.toString(id))
 				.setIssuedAt(new Date())
 				.setExpiration(expiryDate)
 				.signWith(SignatureAlgorithm.HS512, key)
 				.compact();
 	}
-
+	
 	public Long getUserIdFromJWT(String token) {
 		Claims claims = Jwts.parser()
 				.setSigningKey(key)
