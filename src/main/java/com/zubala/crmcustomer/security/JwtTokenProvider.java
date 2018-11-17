@@ -21,30 +21,30 @@ public class JwtTokenProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
 
-	@Value("${app.jwtSecret}")
-	private String jwtSecret;
+	@Value("${app.signingKey}")
+	private String key;
 
-	@Value("${app.jwtExpirationInMs}")
-	private int jwtExpirationInMs;
+	@Value("${app.expirationInMs}")
+	private int expirationInMs;
 
 	public String generateToken(Authentication authentication) {
 
 		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
 		Date now = new Date();
-		Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
+		Date expiryDate = new Date(now.getTime() + expirationInMs);
 
 		return Jwts.builder()
 				.setSubject(Long.toString(userPrincipal.getId()))
 				.setIssuedAt(new Date())
 				.setExpiration(expiryDate)
-				.signWith(SignatureAlgorithm.HS512, jwtSecret)
+				.signWith(SignatureAlgorithm.HS512, key)
 				.compact();
 	}
 
 	public Long getUserIdFromJWT(String token) {
 		Claims claims = Jwts.parser()
-				.setSigningKey(jwtSecret)
+				.setSigningKey(key)
 				.parseClaimsJws(token)
 				.getBody();
 		return Long.parseLong(claims.getSubject());
@@ -53,7 +53,7 @@ public class JwtTokenProvider {
 	public boolean validateToken(String authToken) {
 		try {
 			Jwts.parser()
-				.setSigningKey(jwtSecret)
+				.setSigningKey(key)
 				.parseClaimsJws(authToken);
 			return true;
 		} catch (SignatureException ex) {
