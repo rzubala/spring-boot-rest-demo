@@ -25,13 +25,16 @@ public class JwtTokenProvider {
 	private String key;
 
 	@Value("${app.expirationInMs}")
-	private int expirationInMs;
+	private long expirationInMs;
 
 	public String generateToken(Authentication authentication) {
 
 		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 		return generateTokenByUserId(userPrincipal.getId());
-
+	}
+	
+	public long getExpiredIn() {
+		return expirationInMs;
 	}
 
 	public String generateTokenByUserId(Long id) {

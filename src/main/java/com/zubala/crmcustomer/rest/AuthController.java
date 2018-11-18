@@ -1,14 +1,23 @@
 package com.zubala.crmcustomer.rest;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.zubala.crmcustomer.data.AuthorizationRequest;
+import com.zubala.crmcustomer.data.AuthorizationResponse;
 import com.zubala.crmcustomer.security.JwtTokenProvider;
 import com.zubala.crmcustomer.security.UserPrincipal;
 
@@ -20,6 +29,57 @@ public class AuthController {
 
 	@Autowired
 	private JwtTokenProvider tokenProvider;
+
+	@Autowired
+    AuthenticationManager authenticationManager;
+
+	@PostMapping("/login")
+	private ResponseEntity<?> login(@Valid @RequestBody AuthorizationRequest request) {
+		String username = request.getUsername();
+		String password = request.getPassword();
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = tokenProvider.generateToken(authentication);
+        AuthorizationResponse response = new AuthorizationResponse();
+        response.setToken(token);
+        response.setExpiredIn(tokenProvider.getExpiredIn());        
+        return ResponseEntity.ok(response);
+		
+	}
+
+/*	
+    @PostMapping("/signup")
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+        if(userRepository.existsByUsername(signUpRequest.getUsername())) {
+            return new ResponseEntity(new ApiResponse(false, "Username is already taken!"),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        if(userRepository.existsByEmail(signUpRequest.getEmail())) {
+            return new ResponseEntity(new ApiResponse(false, "Email Address already in use!"),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        // Creating user's account
+        User user = new User(signUpRequest.getName(), signUpRequest.getUsername(),
+                signUpRequest.getEmail(), signUpRequest.getPassword());
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
+                .orElseThrow(() -> new AppException("User Role not set."));
+
+        user.setRoles(Collections.singleton(userRole));
+
+        User result = userRepository.save(user);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath().path("/users/{username}")
+                .buildAndExpand(result.getUsername()).toUri();
+
+        return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+    }
+*/	
 	
 	@GetMapping("/token")
 	private String getToken() {
