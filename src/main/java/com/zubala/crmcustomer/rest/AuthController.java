@@ -1,6 +1,5 @@
 package com.zubala.crmcustomer.rest;
 
-import java.net.URI;
 import java.util.Collections;
 
 import javax.validation.Valid;
@@ -8,7 +7,6 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.zubala.crmcustomer.data.ApiResponse;
 import com.zubala.crmcustomer.data.AuthorizationRequest;
@@ -71,23 +68,15 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody AuthorizationRequest request) {
-        if(userRepository.existsByUsername(request.getUsername())) {
-            return new ResponseEntity<ApiResponse>(new ApiResponse(false, "Username is already taken!"), HttpStatus.BAD_REQUEST);
+        if (userRepository.existsByUsername(request.getUsername())) {
+        	return ResponseEntity.badRequest().body(new ApiResponse(false, "Username is already taken!"));
         }
-
         String password = passwordEncoder.encode(request.getPassword());
         User user = new User(request.getUsername(), password);
-
         Role userRole = roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new ApiException("User Role not set."));
-
         user.setRoles(Collections.singleton(userRole));
-
-        User result = userRepository.save(user);
-
-        //FIXME
-        URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/users/{username}").buildAndExpand(result.getUsername()).toUri();
-
-        return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+        userRepository.save(user);
+        return ResponseEntity.ok(new ApiResponse(true, "User registered successfully"));
     }
 	
 	@GetMapping("/token")
