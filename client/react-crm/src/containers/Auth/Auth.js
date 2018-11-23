@@ -52,7 +52,6 @@ class Auth extends Component {
               value={this.state.password}
               onChange={event => this.passwordChangedHandler(event)}
               type="password"
-              autoComplete="current-password"
               margin="normal"
               variant="outlined"
             />
