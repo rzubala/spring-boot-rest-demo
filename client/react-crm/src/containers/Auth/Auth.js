@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import { connect } from 'react-redux';
+import * as actions from './../../store/actions/index';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
@@ -10,7 +11,6 @@ class Auth extends Component {
   state = {
       username: null,
       password: null,
-      token: null
   };
 
   usernameChangedHandler(event) {
@@ -23,20 +23,22 @@ class Auth extends Component {
 
   submitHandler = (event) => {
     event.preventDefault();
-
-    axios
-      .post('http://localhost:8080/api/auth/login', {
-        username: this.state.username,
-        password: this.state.password
-      })
-      .then(r => this.setState({token: r.data.token}))
-      .catch(e => this.setState({token: null}));
+    this.props.onLogin(this.state.username, this.state.password);
   }
 
   render () {
+      let token = null;
+      if (this.props.token) {
+        token = <p>token: {this.props.token}</p>
+      }
+      let error = null;
+      if (this.props.error) {
+        error = <p>error: {this.props.error}</p>
+      }
       return (
         <div className="Auth" >
-          <p>token: {this.state.token}</p>
+          {token}
+          {error}
           <form className="AuthForm" onSubmit={this.submitHandler}>
             <TextField
               id="username"
@@ -62,4 +64,17 @@ class Auth extends Component {
   }
 }
 
-export default Auth;
+const mapStateToProps = state => {
+  return {
+    token: state.auth.token,
+    error: state.auth.error    
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onLogin: (username, password) => dispatch(actions.login(username, password)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);
