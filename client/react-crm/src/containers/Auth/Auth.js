@@ -26,6 +26,10 @@ class Auth extends Component {
     this.props.onLogin(this.state.username, this.state.password);
   }
 
+  focusUsernameInputField = input => {
+    input && input.focus();
+  };
+
   render () {
       let token = null;
       if (this.props.token) {
@@ -41,6 +45,7 @@ class Auth extends Component {
           {error}
           <form className="AuthForm" onSubmit={this.submitHandler}>
             <TextField
+              inputRef={this.focusUsernameInputField}
               id="username"
               label="Username"
               value={this.state.username}
