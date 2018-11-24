@@ -26,14 +26,11 @@ export const fetchCustomers = (token) => {
     dispatch(fetchCustomersStart());
     var config = {
       headers: {
-        'Authorization': "bearer " + token
+        'Authorization': 'Bearer ' + token
       }
     };
     axios.get('/customers', config)
-    .then(r => {
-      console.log(r);
-      dispatch(fetchCustomersSuccess(r.data.content));
-    })
+    .then(r => dispatch(fetchCustomersSuccess(r.data.content)))
     .catch(e => {
       let error = 'Network error';
       if (e.response) {

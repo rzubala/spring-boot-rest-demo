@@ -1,12 +1,12 @@
-import * as actionTypes from './actionTypes';
+import * as actionTypes from './../actions/actionTypes';
 
 const initialState = {
   customers: null,
   loading: false,
-  error: null;
+  error: null
 }
 
-customerFetchStart = (state, action) => {
+const customerFetchStart = (state, action) => {
   return {
     ...state,
     loading: true,
@@ -15,7 +15,7 @@ customerFetchStart = (state, action) => {
   };
 }
 
-customerFetchSuccess = (state, action) => {
+const customerFetchSuccess = (state, action) => {
   return {
     ...state,
     loading: false,
@@ -23,7 +23,7 @@ customerFetchSuccess = (state, action) => {
   };
 }
 
-customerFetchFail = (state, action) => {
+const customerFetchFail = (state, action) => {
   return {
     ...state,
     loading: false,
@@ -31,12 +31,14 @@ customerFetchFail = (state, action) => {
   };
 }
 
-export const reducer = (state = initialState, action) => {
+const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.CUSTOMERS_FETCH_START: customerFetchStart(state, action);
-    case actionTypes.CUSTOMERS_FETCH_SUCCESS: customerFetchSuccess(state, action);
-    case actionTypes.CUSTOMERS_FETCH_FAIL: customerFetchFail(state, action);
+    case actionTypes.CUSTOMERS_FETCH_START: return customerFetchStart(state, action);
+    case actionTypes.CUSTOMERS_FETCH_SUCCESS: return customerFetchSuccess(state, action);
+    case actionTypes.CUSTOMERS_FETCH_FAIL: return customerFetchFail(state, action);
     default:;
   }
   return state;
 }
+
+export default reducer;
