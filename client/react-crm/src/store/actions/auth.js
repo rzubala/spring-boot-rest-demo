@@ -24,12 +24,17 @@ export const loginFail = (error) => {
 
 export const login = (username, password) => {
   return dispatch => {
+    dispatch(loginStart());
     axios
       .post('/auth/login', {
         username: username,
         password: password
       })
-      .then(r => dispatch(loginSuccess(r.data.token, r.data.userId)))
-      .catch(e => dispatch(loginFail(e.response.data.error)));
+      .then(r => {
+        dispatch(loginSuccess(r.data.token, r.data.userId))
+      })
+      .catch(e => {
+        dispatch(loginFail(e.response.data.message))
+      });
   }
 };

@@ -9,8 +9,8 @@ import './Auth.css';
 class Auth extends Component {
 
   state = {
-      username: null,
-      password: null,
+      username: '',
+      password: '',
   };
 
   usernameChangedHandler(event) {
@@ -56,6 +56,7 @@ class Auth extends Component {
               type="password"
               margin="normal"
               variant="outlined"
+              autoComplete="password"
             />
             <Button variant="outlined" color="primary" type="submit">SUBMIT</Button>
           </form>
@@ -67,7 +68,7 @@ class Auth extends Component {
 const mapStateToProps = state => {
   return {
     token: state.auth.token,
-    error: state.auth.error    
+    error: state.auth.error
   };
 }
 

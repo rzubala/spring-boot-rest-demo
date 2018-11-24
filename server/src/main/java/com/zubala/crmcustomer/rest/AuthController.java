@@ -62,6 +62,7 @@ public class AuthController {
         AuthorizationResponse response = new AuthorizationResponse();
         response.setToken(token);
         response.setExpiredIn(tokenProvider.getExpiredIn());        
+        response.setUserId(((UserPrincipal) authentication.getPrincipal()).getId());
         return ResponseEntity.ok(response);
 		
 	}
