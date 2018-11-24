@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import * as actions from './../../store/actions/index';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -31,9 +32,9 @@ class Auth extends Component {
   };
 
   render () {
-      let token = null;
+      let redirect = null;
       if (this.props.token) {
-        token = <p>token: {this.props.token}</p>
+        redirect = <Redirect to ="/customers" />
       }
       let error = null;
       if (this.props.error) {
@@ -41,7 +42,7 @@ class Auth extends Component {
       }
       return (
         <div className="Auth" >
-          {token}
+          {redirect}
           {error}
           <form className="AuthForm" onSubmit={this.submitHandler}>
             <TextField

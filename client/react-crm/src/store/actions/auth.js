@@ -34,7 +34,11 @@ export const login = (username, password) => {
         dispatch(loginSuccess(r.data.token, r.data.userId))
       })
       .catch(e => {
-        dispatch(loginFail(e.response.data.message))
+        let error = 'Network error';
+        if (e.response) {
+          error = e.response.data.message;
+        }
+        dispatch(loginFail(error))
       });
   }
 };
