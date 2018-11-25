@@ -1,4 +1,31 @@
 .Customer {
-    width: 100%;
+    width: 80%;
     margin: 10px auto;
+}
+
+.Customer form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.CustomerInput {
+    display: block;
+    margin: 10px auto;
+}
+
+.CustomerButtons {
+    display: flex;
+    flex-direction: row;
+    margin: 10px auto;
+    justify-content: space-between;
+}
+
+.CustomerButton {
+    width: 110px;
+    margin: 10px !important;
+}
+
+.IconMargin {
+    margin-right: 10px;
 }
