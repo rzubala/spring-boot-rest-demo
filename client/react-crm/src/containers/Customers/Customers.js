@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import * as actions from './../../store/actions/index';
+import { Route, Link } from 'react-router-dom';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -11,6 +11,9 @@ import Paper from '@material-ui/core/Paper';
 import IconButton from "@material-ui/core/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+
+import * as actions from './../../store/actions/index';
+import Customer from './Customer/Customer';
 
 import './Customers.css';
 
@@ -26,6 +29,7 @@ class Customers extends Component {
 
   editRow = id => {
     console.log('edit: ' + id);
+    //this.props.history.push('/' + id)
   }
 
   deleteRow = id => {
@@ -33,6 +37,14 @@ class Customers extends Component {
   }
 
   render() {
+    const noSpace = {
+      margin: '0px',
+      padding: '0px',
+      boxSizing: 'border-box',
+      textDecoration: 'none',
+      fontSize: '0px'
+    };
+
     let rows = null;
     if (this.props.customers) {
       rows = this.props.customers.map(row => {
@@ -44,9 +56,11 @@ class Customers extends Component {
             <TableCell>{row.createdAt}</TableCell>
             <TableCell>{row.updatedAt}</TableCell>
             <TableCell>
-              <IconButton onClick={() => this.editRow(row.id)}>
-                <EditIcon color="primary" />
-              </IconButton>  
+              <IconButton>                                
+                <Link style={noSpace} to={{pathname: this.props.match.url + '/' + row.id}} >
+                  A<EditIcon color="primary" />
+                </Link>                                  
+              </IconButton>
               <IconButton onClick={() => this.deleteRow(row.id)}>
                 <DeleteIcon color="primary" />
               </IconButton>
@@ -68,17 +82,20 @@ class Customers extends Component {
     );
 
     return (
-      <Paper className="Customers">
-        <h1>CUSTOMERS</h1>
-        <Table>
-          <TableHead>
-            {headers}
-          </TableHead>
-          <TableBody>
-            {rows}
-          </TableBody>
-        </Table>
-      </Paper>
+      <div>
+        <Paper className="Customers">
+          <h1>CUSTOMERS</h1>
+          <Table>
+            <TableHead>
+              {headers}
+            </TableHead>
+            <TableBody>
+              {rows}
+            </TableBody>
+          </Table>
+        </Paper>
+        <Route path={this.props.match.url + '/:customerId'} component={Customer} />
+      </div>
     );
   }
 }
