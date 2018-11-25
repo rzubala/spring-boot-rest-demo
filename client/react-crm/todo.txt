@@ -1,8 +1,0 @@
-- login from local storage
-- logout
-- user panel
-- customer actions: CRUD
-- utf-8 issue
-- signup
-- lower width screens
-
