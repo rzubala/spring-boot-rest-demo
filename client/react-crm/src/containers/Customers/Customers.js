@@ -8,6 +8,9 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import IconButton from "@material-ui/core/IconButton";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 import './Customers.css';
 
@@ -21,6 +24,14 @@ class Customers extends Component {
     }
   }
 
+  editRow = id => {
+    console.log('edit: ' + id);
+  }
+
+  deleteRow = id => {
+    console.log('remove: ' + id);
+  }
+
   render() {
     let rows = null;
     if (this.props.customers) {
@@ -32,6 +43,14 @@ class Customers extends Component {
             <TableCell>{row.email}</TableCell>
             <TableCell>{row.createdAt}</TableCell>
             <TableCell>{row.updatedAt}</TableCell>
+            <TableCell>
+              <IconButton onClick={() => this.editRow(row.id)}>
+                <EditIcon color="primary" />
+              </IconButton>  
+              <IconButton onClick={() => this.deleteRow(row.id)}>
+                <DeleteIcon color="primary" />
+              </IconButton>
+            </TableCell>
           </TableRow>
         );
       });
@@ -44,6 +63,7 @@ class Customers extends Component {
         <TableCell>Email</TableCell>
         <TableCell>Created at</TableCell>
         <TableCell>Updated at</TableCell>
+        <TableCell>Actions</TableCell>
       </TableRow>
     );
 
