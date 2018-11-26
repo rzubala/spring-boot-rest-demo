@@ -4,7 +4,8 @@ TODO:
 - logout
 - user panel
 - customer actions: CRUD
-- utf-8 issue
 - signup
 - lower width screens
 
++ utf-8 issue
++ date issue
