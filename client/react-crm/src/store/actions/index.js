@@ -2,5 +2,6 @@ export {
   login
 } from './auth';
 export {
-  fetchCustomers
+  fetchCustomers,
+  updateCustomer
 } from './customers';

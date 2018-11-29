@@ -5,6 +5,8 @@ import Customers from './containers/Customers/Customers';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import { CUSTOMERS_PATH } from './containers/Customers/Customers';
+
 class App extends Component {
   render() {
     let routes = (
@@ -15,7 +17,7 @@ class App extends Component {
     if (this.props.token) {
       routes = (
         <Switch>
-          <Route path ="/customers" component={Customers} />
+          <Route path = {CUSTOMERS_PATH} component={Customers} />
           <Route path ="/" exact component={Auth} />
           <Redirect to="/" />          
         </Switch>);

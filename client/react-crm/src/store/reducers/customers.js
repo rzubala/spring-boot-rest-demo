@@ -31,11 +31,29 @@ const customerFetchFail = (state, action) => {
   };
 }
 
+const customerUpdateSuccess = (state, action) => {
+  const customer = action.data;
+  const newCustomers = state.customers.map(e => {
+    if (e.id !== customer.id) {
+      return e;
+    } else {
+      return {
+        ...customer
+      };
+    }
+  })
+  return {
+    ...state,
+    customers: newCustomers
+  };
+}
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.CUSTOMERS_FETCH_START: return customerFetchStart(state, action);
     case actionTypes.CUSTOMERS_FETCH_SUCCESS: return customerFetchSuccess(state, action);
     case actionTypes.CUSTOMERS_FETCH_FAIL: return customerFetchFail(state, action);
+    case actionTypes.CUSTOMERS_UPDATE_SUCCESS: return customerUpdateSuccess(state, action);
     default:;
   }
   return state;

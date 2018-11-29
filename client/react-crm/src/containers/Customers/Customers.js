@@ -17,6 +17,8 @@ import Customer from './Customer/Customer';
 
 import './Customers.css';
 
+export const CUSTOMERS_PATH = '/customers';
+
 class Customers extends Component {
 
   state = {};
@@ -58,7 +60,7 @@ class Customers extends Component {
             <TableCell>
               <IconButton>                                
                 <Link style={noSpace} to={{pathname: this.props.match.url + '/' + row.id}} >
-                  A<EditIcon color="primary" />
+                  <EditIcon color="primary" />
                 </Link>                                  
               </IconButton>
               <IconButton onClick={() => this.deleteRow(row.id)}>
