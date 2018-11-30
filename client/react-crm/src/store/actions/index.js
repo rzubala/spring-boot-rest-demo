@@ -3,5 +3,6 @@ export {
 } from './auth';
 export {
   fetchCustomers,
-  updateCustomer
+  updateCustomer,
+  deleteCustomer
 } from './customers';

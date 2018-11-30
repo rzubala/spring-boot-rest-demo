@@ -36,7 +36,7 @@ export const fetchCustomers = (token) => {
     axios.get('/customers', buildTokenConfig(token))
     .then(r => dispatch(fetchCustomersSuccess(r.data.content)))
     .catch(e => {
-      let error = 'Network error';
+      let error = 'Fetch network error';
       if (e.response) {
         error = e.response.data.message;
       }
@@ -57,7 +57,28 @@ export const updateCustomer = (token, customer) => {
     axios.put('/customers/' + customer.id, customer, buildTokenConfig(token))
     .then(r => dispatch(onUpdateSuccess(r.data)))
     .catch(e => {
-      let error = 'Network error';
+      let error = 'Update network error';
+      if (e.response) {
+        error = e.response.data.message;
+      }
+      console.log(error);
+    });
+  }
+}
+
+const onDeleteSuccess = (id) => {
+  return {
+    type: actionTypes.CUSTOMERS_DELETE_SUCCESS,
+    id: id
+  };
+}
+
+export const deleteCustomer = (token, id) => {
+  return dispatch => {
+    axios.delete('/customers/' + id, buildTokenConfig(token))
+    .then(r => dispatch(onDeleteSuccess(id)))
+    .catch(e => {
+      let error = 'Delete network error';
       if (e.response) {
         error = e.response.data.message;
       }

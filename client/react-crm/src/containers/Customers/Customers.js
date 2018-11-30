@@ -36,6 +36,7 @@ class Customers extends Component {
 
   deleteRow = id => {
     console.log('remove: ' + id);
+    this.props.onCustomerDelete(this.props.token, id);
   }
 
   render() {
@@ -113,7 +114,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onCustomersFetch: token => dispatch(actions.fetchCustomers(token))
+    onCustomersFetch: token => dispatch(actions.fetchCustomers(token)),
+    onCustomerDelete: (token, id) => dispatch(actions.deleteCustomer(token, id))
   }
 }
 

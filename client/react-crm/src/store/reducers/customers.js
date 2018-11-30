@@ -48,12 +48,27 @@ const customerUpdateSuccess = (state, action) => {
   };
 }
 
+const customerDeleteSuccess = (state, action) => {
+  const id = action.id;
+  const newCustomers = state.customer.map(e => {
+    if (e.id === id) {
+      return null;
+    }
+    return e;
+  });
+  return {
+    ...state,
+    customers: newCustomers
+  };
+}
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.CUSTOMERS_FETCH_START: return customerFetchStart(state, action);
     case actionTypes.CUSTOMERS_FETCH_SUCCESS: return customerFetchSuccess(state, action);
     case actionTypes.CUSTOMERS_FETCH_FAIL: return customerFetchFail(state, action);
     case actionTypes.CUSTOMERS_UPDATE_SUCCESS: return customerUpdateSuccess(state, action);
+    case actionTypes.CUSTOMERS_DELETE_SUCCESS: return customerDeleteSuccess(state, action);
     default:;
   }
   return state;
