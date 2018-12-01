@@ -50,11 +50,8 @@ const customerUpdateSuccess = (state, action) => {
 
 const customerDeleteSuccess = (state, action) => {
   const id = action.id;
-  const newCustomers = state.customer.map(e => {
-    if (e.id === id) {
-      return null;
-    }
-    return e;
+  const newCustomers = state.customers.filter(e => {
+    return (e.id !== id);
   });
   return {
     ...state,

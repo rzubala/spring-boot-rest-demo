@@ -50,7 +50,7 @@ public class CustomerServiceImpl implements CustomerService {
 		return customerRepository.findById(customerId)
 				.map(customer -> {
 					customerRepository.delete(customer);
-					return ResponseEntity.ok().build();
+					return ResponseEntity.ok(customerId);
 				})
 				.orElseThrow(() -> new ResourceNotFoundException("Customer", "id", customerId));
 
