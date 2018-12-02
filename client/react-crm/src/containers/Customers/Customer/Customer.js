@@ -31,13 +31,23 @@ class Customer extends Component {
         let updatedState = {
             customer: null
         };
-        const id = +nextProps.match.params.customerId;
-        const customerObject = nextProps.customers.find(c => {
-            return c.id === id;
-        });
+        let customerObject = null;
+        let id = nextProps.match.params.customerId;
+        if (id === 'new') {
+            customerObject = {
+                firstName: '',
+                lastName: '',
+                email: '',
+                id: null
+            }
+        } else {
+            id = +id; 
+            customerObject = nextProps.customers.find(c => {
+                return c.id === id;
+            });
+        }
         if (customerObject) {
             updatedState = {
-                ...updatedState,
                 customer: {
                     ...customerObject
                 }                
@@ -48,7 +58,11 @@ class Customer extends Component {
 
     submitHandler = (event) => {
         event.preventDefault();
-        this.props.onCustomerUpdate(this.props.token, this.state.customer);
+        if (this.state.customer.id) {
+            this.props.onCustomerUpdate(this.props.token, this.state.customer);
+        } else {
+            this.props.onCustomerCreate(this.props.token, this.state.customer);
+        }
         this.goBackToCustomers();
     }
 
@@ -113,7 +127,8 @@ const mapStatToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onCustomerUpdate: (token, customer) => dispatch(actions.updateCustomer(token, customer))
+        onCustomerUpdate: (token, customer) => dispatch(actions.updateCustomer(token, customer)),
+        onCustomerCreate: (token, customer) => dispatch(actions.createCustomer(token, customer))
     }
 }
 

@@ -33,15 +33,28 @@ const customerFetchFail = (state, action) => {
 
 const customerUpdateSuccess = (state, action) => {
   const customer = action.data;
-  const newCustomers = state.customers.map(e => {
-    if (e.id !== customer.id) {
-      return e;
-    } else {
-      return {
-        ...customer
-      };
-    }
-  })
+  const create = action.create;
+  let newCustomers;
+  if (create) {
+    const newCustomer = {
+      ...customer
+    };
+    newCustomers = [
+      ...state.customers,
+      newCustomer
+    ];
+    console.log(newCustomers);
+  } else {
+    newCustomers = state.customers.map(e => {
+      if (e.id !== customer.id) {
+        return e;
+      } else {
+        return {
+          ...customer
+        };
+      }
+    });
+  }
   return {
     ...state,
     customers: newCustomers

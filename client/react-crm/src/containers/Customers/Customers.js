@@ -15,6 +15,9 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import * as actions from './../../store/actions/index';
 import Customer from './Customer/Customer';
 
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
+
 import './Customers.css';
 
 export const CUSTOMERS_PATH = '/customers';
@@ -29,14 +32,12 @@ class Customers extends Component {
     }
   }
 
-  editRow = id => {
-    console.log('edit: ' + id);
-    //this.props.history.push('/' + id)
+  deleteRow = id => {
+    this.props.onCustomerDelete(this.props.token, id);
   }
 
-  deleteRow = id => {
-    console.log('remove: ' + id);
-    this.props.onCustomerDelete(this.props.token, id);
+  onCreateNewCustomer = () => {
+    this.props.history.replace(this.props.match.url + '/new');
   }
 
   render() {
@@ -87,6 +88,15 @@ class Customers extends Component {
     return (
       <div>
         <Paper className="Customers">
+          <div style={{
+              textAlign: 'right',
+              width:  '100%',
+              padding: '0'
+            }}>
+            <Button variant="contained" color="primary" onClick={this.onCreateNewCustomer}>
+                <AddIcon className="IconMargin" />New
+            </Button>
+          </div>
           <h1>CUSTOMERS</h1>
           <Table>
             <TableHead>

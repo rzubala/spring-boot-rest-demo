@@ -4,5 +4,6 @@ export {
 export {
   fetchCustomers,
   updateCustomer,
-  deleteCustomer
+  deleteCustomer,
+  createCustomer
 } from './customers';

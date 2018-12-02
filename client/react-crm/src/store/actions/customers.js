@@ -45,10 +45,11 @@ export const fetchCustomers = (token) => {
   };
 }
 
-const onUpdateSuccess = customer => {
+const onUpdateSuccess = (customer, create = false) => {
   return {
     type: actionTypes.CUSTOMERS_UPDATE_SUCCESS,
-    data: customer
+    data: customer,
+    create: create
   };
 }
 
@@ -56,6 +57,20 @@ export const updateCustomer = (token, customer) => {
   return dispatch => {
     axios.put('/customers/' + customer.id, customer, buildTokenConfig(token))
     .then(r => dispatch(onUpdateSuccess(r.data)))
+    .catch(e => {
+      let error = e;
+      if (e.response) {
+        error = e.response.data.message;
+      }
+      console.log(error);
+    });
+  }
+}
+
+export const createCustomer = (token, customer) => {
+  return dispatch => {
+    axios.post('/customers', customer, buildTokenConfig(token))
+    .then(r => dispatch(onUpdateSuccess(r.data, true)))
     .catch(e => {
       let error = e;
       if (e.response) {
