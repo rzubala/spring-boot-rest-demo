@@ -1,0 +1,12 @@
+.LayoutRoot {
+    flex-grow: 1;
+}
+
+.LayoutMenuButton {
+    margin-left: -12;
+    margin-right: 20;
+}
+
+.LayoutGrow {
+    flex-grow: 1
+}

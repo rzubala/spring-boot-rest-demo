@@ -97,7 +97,7 @@ class Customers extends Component {
                 <AddIcon className="IconMargin" />New
             </Button>
           </div>
-          <h1>CUSTOMERS</h1>
+          <h1 style={{textAlign: 'center'}}>CUSTOMERS</h1>
           <Table>
             <TableHead>
               {headers}

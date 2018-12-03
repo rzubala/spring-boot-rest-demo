@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Auth from './containers/Auth/Auth';
+import Layout from './hoc/Layout/Layout';
 import Customers from './containers/Customers/Customers';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -16,14 +17,17 @@ class App extends Component {
       </Switch>);
     if (this.props.token) {
       routes = (
-        <Switch>
-          <Route path = {CUSTOMERS_PATH} component={Customers} />
-          <Route path ="/" exact component={Auth} />
-          <Redirect to="/" />          
-        </Switch>);
+        <Layout>
+          <Switch>
+            <Route path = {CUSTOMERS_PATH} component={Customers} />
+            <Route path ="/" exact component={Auth} />
+            <Redirect to="/" />          
+          </Switch>
+          </Layout>  
+        );
     }
     return (
-      <div className="App">
+      <div>
         {routes}
       </div>
     );
