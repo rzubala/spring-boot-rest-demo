@@ -10,3 +10,23 @@
 .LayoutGrow {
     flex-grow: 1
 }
+
+.LayoutList {
+    width: 250px;
+}
+
+.LayoutRightMenu {
+    display: inherit;
+}
+
+@media (min-width: 500px) {
+    .LayoutMenuButton {
+      display: none !important;
+    }
+}
+
+@media (max-width: 500px) {
+    .LayoutRightMenu {
+      display: none !important;
+    }
+}
