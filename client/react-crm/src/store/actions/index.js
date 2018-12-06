@@ -1,5 +1,6 @@
 export {
-  login
+  login,
+  logout
 } from './auth';
 export {
   fetchCustomers,

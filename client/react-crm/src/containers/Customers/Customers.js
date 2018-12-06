@@ -93,7 +93,7 @@ class Customers extends Component {
               width:  '100%',
               padding: '0'
             }}>
-            <Button variant="contained" color="primary" onClick={this.onCreateNewCustomer}>
+            <Button style={{marginRight: '10px'}} variant="contained" color="primary" onClick={this.onCreateNewCustomer}>
                 <AddIcon className="IconMargin" />New
             </Button>
           </div>

@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import './App.css';
 import Auth from './containers/Auth/Auth';
 import Layout from './hoc/Layout/Layout';
+import Aux from './hoc/Aux/Aux';
 import Customers from './containers/Customers/Customers';
+import Logout from './containers/Logout/Logout';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -12,6 +14,7 @@ class App extends Component {
   render() {
     let routes = (
       <Switch>
+        <Route path = "/login" component={Auth} />
         <Route path ="/" exact component={Auth} />
         <Redirect to="/" />
       </Switch>);
@@ -20,16 +23,18 @@ class App extends Component {
         <Layout>
           <Switch>
             <Route path = {CUSTOMERS_PATH} component={Customers} />
+            <Route path = "/logout" component={Logout} />
+            <Route path = "/login" component={Auth} />
             <Route path ="/" exact component={Auth} />
             <Redirect to="/" />          
           </Switch>
-          </Layout>  
+        </Layout>
         );
     }
     return (
-      <div>
+      <Aux>
         {routes}
-      </div>
+      </Aux>
     );
   }
 }

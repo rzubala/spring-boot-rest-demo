@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import { Redirect } from 'react-router-dom';
+
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -21,7 +23,8 @@ class Layout extends Component {
 
     state = {
         left: false,
-        anchorEl: null
+        anchorEl: null,
+        logout: null
     };
 
     toggleDrawer = open => () => {
@@ -33,6 +36,10 @@ class Layout extends Component {
     handleClose = () => {
         this.setState({ anchorEl: null });
     };
+
+    handleLogout = () => {
+        this.setState({logout: true, anchorEl: null});
+    }
 
     handleMenu = event => {
         this.setState({ anchorEl: event.currentTarget });
@@ -49,7 +56,7 @@ class Layout extends Component {
               </List>
               <Divider />
               <List>
-                  <ListItem button key="Logout">
+                  <ListItem button key="Logout" onClick={this.handleLogout}>
                     <ListItemIcon><LogoutIcon /></ListItemIcon>
                     <ListItemText primary="Logout" />
                   </ListItem>
@@ -59,9 +66,15 @@ class Layout extends Component {
 
         const anchorEl = this.state.anchorEl;
         const open = Boolean(anchorEl);
+        
+        let redirect = null;
+        if (this.state.logout) {             
+            redirect = <Redirect to ="/logout" />
+        }
 
         return (
             <div className="LayoutRoot">
+              {redirect}
               <AppBar position="static">
                 <Toolbar>
                     <IconButton className="LayoutMenuButton" color="inherit" onClick={this.toggleDrawer(true)}>
@@ -87,7 +100,7 @@ class Layout extends Component {
                         onClose={this.handleClose}
                         >
                         <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-                        <MenuItem onClick={this.handleClose}>Logout</MenuItem>
+                        <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
                         </Menu>
                     </div>
                 </Toolbar>

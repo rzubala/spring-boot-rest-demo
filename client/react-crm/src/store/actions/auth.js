@@ -42,3 +42,9 @@ export const login = (username, password) => {
       });
   }
 };
+
+export const logout = () => {
+  return {
+    type: actionTypes.AUTH_LOGOUT
+  };
+}
