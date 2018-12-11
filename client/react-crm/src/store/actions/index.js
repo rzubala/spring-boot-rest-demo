@@ -1,6 +1,7 @@
 export {
   login,
-  logout
+  logout,
+  tryAutoLogin
 } from './auth';
 export {
   fetchCustomers,

@@ -31,7 +31,13 @@ export const login = (username, password) => {
         password: password
       })
       .then(r => {
+        const expirationDate = new Date(new Date().getTime() + r.data.expiredIn);
+        localStorage.setItem('token', r.data.token);
+        localStorage.setItem('expirationDate', expirationDate);
+        localStorage.setItem('userId', r.data.userId);
+  
         dispatch(loginSuccess(r.data.token, r.data.userId))
+        dispatch(authTimeout(r.data.expiredIn));
       })
       .catch(e => {
         let error = 'Network error';
@@ -44,7 +50,36 @@ export const login = (username, password) => {
 };
 
 export const logout = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('expirationDate');
+  localStorage.removeItem('userId');
   return {
     type: actionTypes.AUTH_LOGOUT
   };
+}
+
+export const authTimeout = (expirationTime) => {
+  return dispatch => {    
+    setTimeout(() => {
+      dispatch(logout());
+    }, expirationTime);
+  };
+};
+
+export const tryAutoLogin = () => {
+  return dispatch => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      dispatch(logout());
+      return;
+    }
+    const expirationDate = new Date(localStorage.getItem('expirationDate'));
+    if (expirationDate <= new Date()) {
+      dispatch(logout());
+    } else {
+      const userId = localStorage.getItem('userId');      
+      dispatch(loginSuccess(token, userId))
+      dispatch(authTimeout(expirationDate.getTime() - new Date().getTime()));
+    }
+  }
 }

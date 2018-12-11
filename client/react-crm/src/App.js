@@ -7,10 +7,16 @@ import Customers from './containers/Customers/Customers';
 import Logout from './containers/Logout/Logout';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import * as actions from './store/actions/index';
 
 import { CUSTOMERS_PATH } from './containers/Customers/Customers';
 
 class App extends Component {
+
+  componentDidMount() {
+    this.props.onTryAutoLogin();
+  }
+
   render() {
     let routes = (
       <Switch>
@@ -45,4 +51,10 @@ const mapStateToProps = state => {
   };
 }
 
-export default withRouter(connect(mapStateToProps)(App));
+const mapDispatchToProps = dispatch => {
+  return {
+    onTryAutoLogin: () => dispatch(actions.tryAutoLogin())
+  }
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
