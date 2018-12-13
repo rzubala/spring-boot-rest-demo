@@ -17,6 +17,7 @@ import Customer from './Customer/Customer';
 
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import './Customers.css';
 
@@ -49,9 +50,9 @@ class Customers extends Component {
       fontSize: '0px'
     };
 
-    let rows = null;
+    let customersTable = <div style={{textAlign: "center"}}><CircularProgress /></div>;
     if (this.props.customers) {
-      rows = this.props.customers.map(row => {
+      const rows = this.props.customers.map(row => {
         return (
           <TableRow key={row.id}>
             <TableCell component="th" scope="row">{row.firstName}</TableCell>
@@ -72,18 +73,28 @@ class Customers extends Component {
           </TableRow>
         );
       });
-    }
 
-    const headers = (
-      <TableRow>
-        <TableCell>First name</TableCell>
-        <TableCell>Last name</TableCell>
-        <TableCell>Email</TableCell>
-        <TableCell>Created at</TableCell>
-        <TableCell>Updated at</TableCell>
-        <TableCell>Actions</TableCell>
-      </TableRow>
-    );
+      const headers = (
+        <TableRow>
+          <TableCell>First name</TableCell>
+          <TableCell>Last name</TableCell>
+          <TableCell>Email</TableCell>
+          <TableCell>Created at</TableCell>
+          <TableCell>Updated at</TableCell>
+          <TableCell>Actions</TableCell>
+        </TableRow>
+      );
+
+      customersTable = (
+        <Table>
+          <TableHead>
+            {headers}
+          </TableHead>
+          <TableBody>
+            {rows}
+          </TableBody>
+        </Table>);    
+    }
 
     return (
       <div>
@@ -98,14 +109,7 @@ class Customers extends Component {
             </Button>
           </div>
           <h1 style={{textAlign: 'center'}}>CUSTOMERS</h1>
-          <Table>
-            <TableHead>
-              {headers}
-            </TableHead>
-            <TableBody>
-              {rows}
-            </TableBody>
-          </Table>
+          {customersTable}
         </Paper>
         <Route path={this.props.match.url + '/:customerId'} component={Customer} />
       </div>

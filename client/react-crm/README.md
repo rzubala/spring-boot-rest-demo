@@ -4,6 +4,7 @@ TODO:
 - mobile screens
 - global network error
 - pagination
++ spinner
 
 ---
 + login from local storage
