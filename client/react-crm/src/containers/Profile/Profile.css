@@ -12,6 +12,14 @@
     justify-content: center;
 }
 
+.ProfileForm {
+    display: flex;
+    flex-direction: column;
+    margin: 10px auto;
+    align-items: center;
+    justify-content: center;
+}
+
 .ProfileButton {
     width: 110px;
     margin: 10px !important;
