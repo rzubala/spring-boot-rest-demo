@@ -4,7 +4,6 @@ import { Redirect } from 'react-router';
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
-import Input from '@material-ui/core/Input';
 import TextField from '@material-ui/core/TextField';
 
 import { CUSTOMERS_PATH } from '../Customers/Customers';
@@ -28,7 +27,7 @@ class Profile extends Component {
         phone: null
     }
 
-    submitHandler() {
+    submitHandler = (event) => {
         event.preventDefault();
     }
 
@@ -84,7 +83,7 @@ class Profile extends Component {
                         className="ProfileInput"
                         type="password"
                         value={this.state.password}
-                        onChange={(event) => this.onFieldChange(event, PASSWORD)}
+                        onChange={(event) => this.onFieldChange(event, PASSWORD2)}
                         autoComplete="current-password"
                         margin="normal" />
 
