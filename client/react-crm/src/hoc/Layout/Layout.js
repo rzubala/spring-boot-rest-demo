@@ -9,7 +9,7 @@ import './Layout.css';
 class Layout extends Component {
 
     state = {
-        logout: null,
+        path: null,
         leftDrawer: false
     };
 
@@ -20,19 +20,28 @@ class Layout extends Component {
     };
 
     handleLogout = () => {
-        this.setState({logout: true});
+        this.setState({path: '/logout'});
+    }
+
+    handleProfile = () => {
+        this.setState({path: '/profile'});
+    }
+
+    componentWillReceiveProps = (nextProps) => {
+        this.setState({path: null});
     }
 
     render() {        
         let redirect = null;
-        if (this.state.logout) {             
-            redirect = <Redirect to ="/logout" />
+        if (this.state.path) {             
+            redirect = <Redirect to ={this.state.path} />
+            console.log('layout',this.state.path);
         }
         return (
             <div className="LayoutRoot">
               {redirect}
-              <TopToolbar onToggle={this.toggleDrawer} onLogout={this.handleLogout} />
-              <LeftDrawer open={this.state.leftDrawer} onToggle={this.toggleDrawer} onLogout={this.handleLogout} />
+              <TopToolbar onToggle={this.toggleDrawer} onLogout={this.handleLogout} onProfile={this.handleProfile} />
+              <LeftDrawer open={this.state.leftDrawer} onToggle={this.toggleDrawer} onLogout={this.handleLogout} onProfile={this.handleProfile} />
               <main>
                 {this.props.children}
               </main>

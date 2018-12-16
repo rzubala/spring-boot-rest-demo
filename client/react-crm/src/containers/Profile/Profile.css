@@ -1,0 +1,22 @@
+.Profile {
+    width: 80%;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.ProfileButtons {
+    display: flex;
+    flex-direction: row;
+    margin: 10px auto;
+    align-items: center;
+    justify-content: center;
+}
+
+.ProfileButton {
+    width: 110px;
+    margin: 10px !important;
+}
+
+.IconMargin {
+    margin-right: 10px;
+}

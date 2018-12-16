@@ -5,6 +5,7 @@ import Layout from './hoc/Layout/Layout';
 import Aux from './hoc/Aux/Aux';
 import Customers from './containers/Customers/Customers';
 import Logout from './containers/Logout/Logout';
+import Profile from './containers/Profile/Profile';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from './store/actions/index';
@@ -30,6 +31,7 @@ class App extends Component {
           <Switch>
             <Route path = {CUSTOMERS_PATH} component={Customers} />
             <Route path = "/logout" component={Logout} />
+            <Route path = "/profile" component={Profile} />
             <Route path = "/login" component={Auth} />
             <Route path ="/" exact component={Auth} />
             <Redirect to="/" />          

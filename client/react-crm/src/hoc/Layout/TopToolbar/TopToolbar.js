@@ -29,6 +29,11 @@ class TopToolbar extends Component {
         this.props.onLogout();
     }
 
+    handleProfile = () => {
+        this.handleClose();
+        this.props.onProfile();
+    }
+
     render() {
         const anchorEl = this.state.anchorEl;
         const isOpen = Boolean(anchorEl);
@@ -59,7 +64,7 @@ class TopToolbar extends Component {
                         open={isOpen} 
                         onClose={this.handleClose}
                         >
-                        <MenuItem onClick={this.handleClose}>Profile</MenuItem>
+                        <MenuItem onClick={this.handleProfile}>Profile</MenuItem>
                         <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
                         </Menu>
                     </div>

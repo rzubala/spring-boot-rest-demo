@@ -17,7 +17,7 @@ const leftDrawer = (props) => {
     const sideList = (
         <div className="LayoutList">
             <List>
-                <ListItem button key="Profile">
+                <ListItem button key="Profile" onClick={props.onProfile}>
                 <ListItemIcon><AccountCircle /></ListItemIcon>
                 <ListItemText primary="Profile" />
                 </ListItem>

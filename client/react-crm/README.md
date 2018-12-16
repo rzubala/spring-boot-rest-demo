@@ -4,9 +4,9 @@ TODO:
 - mobile screens
 - global network error
 - pagination
-+ spinner
 
 ---
++ spinner
 + login from local storage
 + customer actions: CRUD
 + utf-8 issue
