@@ -26,6 +26,7 @@ import com.zubala.crmcustomer.entity.Role;
 import com.zubala.crmcustomer.entity.RoleName;
 import com.zubala.crmcustomer.entity.User;
 import com.zubala.crmcustomer.exception.ApiException;
+import com.zubala.crmcustomer.exception.ResourceNotFoundException;
 import com.zubala.crmcustomer.repository.RoleRepository;
 import com.zubala.crmcustomer.repository.UserRepository;
 import com.zubala.crmcustomer.security.JwtTokenProvider;
@@ -87,5 +88,13 @@ public class AuthController {
 		String token = tokenProvider.generateTokenByUserId(userPrincipal.getId());
 		logger.info("token: " + token);
 		return token;
+	}
+	
+	@GetMapping("/profile")
+	private ResponseEntity<?> getUserProfile() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+		User user = userRepository.findById(userPrincipal.getId()).orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
+		return ResponseEntity.ok(user);
 	}
 }

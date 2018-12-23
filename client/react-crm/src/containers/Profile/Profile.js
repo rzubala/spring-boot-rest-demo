@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import { Redirect } from 'react-router';
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
 import TextField from '@material-ui/core/TextField';
+import axios from '../../axios-crm';
+import { buildTokenConfig } from '../../store/actions/customers';
 
 import { CUSTOMERS_PATH } from '../Customers/Customers';
 
@@ -20,15 +23,32 @@ class Profile extends Component {
 
     state = {
         redirectTo: null,
-        username: null,
-        password: null,
-        password2: null,
-        email: null,
-        phone: null
+        username: "",
+        password: "",
+        password2: "",
+        email: "",
+        phone: ""
     }
 
     submitHandler = (event) => {
         event.preventDefault();
+
+        if (this.state.password !== this.state.password2) {
+            
+            return;
+        }
+    }
+
+    componentDidMount = () => {
+        axios.get('/auth/profile', buildTokenConfig(this.props.token))
+            .then (r => console.log(r.data))
+            .catch (e => {
+                let error = e;
+                if (e.response) {
+                  error = e.response.data.message;
+                }
+                console.log(error);          
+            })
     }
 
     onFieldChange = (event, type) => {
@@ -56,18 +76,21 @@ class Profile extends Component {
                 <form className="ProfileForm" onSubmit={this.submitHandler}>                   
 
                     <TextField
-                        required
-                        id="standard-password-input"
+                        id="login"
                         label="Login"
                         className="ProfileInput"
                         value={this.state.login}
-                        onChange={(event) => this.onFieldChange(event, LOGIN)}
-                        autoComplete="login"
-                        margin="normal" />
+                        // onChange={(event) => this.onFieldChange(event, LOGIN)}
+                        // autoComplete="login"
+                        margin="normal" 
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                        />
 
                     <TextField
                         required
-                        id="standard-password-input"
+                        id="password"
                         label="Password"
                         className="ProfileInput"
                         type="password"
@@ -78,7 +101,7 @@ class Profile extends Component {
 
                     <TextField
                         required
-                        id="standard-password-input"
+                        id="password2"
                         label="Repeat password"
                         className="ProfileInput"
                         type="password"
@@ -89,7 +112,7 @@ class Profile extends Component {
 
                     <TextField
                         required
-                        id="standard-password-input"
+                        id="e-mail"
                         label="E-mail"
                         className="ProfileInput"
                         type="email"
@@ -99,7 +122,7 @@ class Profile extends Component {
                         margin="normal" />
 
                     <TextField
-                        id="standard-password-input"
+                        id="phone"
                         label="Phone"
                         className="ProfileInput"
                         type="phone"
@@ -126,4 +149,10 @@ class Profile extends Component {
     }
 }
 
-export default Profile;
+const mapStateToProps = (state) => {
+    return {
+        token: state.auth.token
+    };
+}
+
+export default connect(mapStateToProps)(Profile);

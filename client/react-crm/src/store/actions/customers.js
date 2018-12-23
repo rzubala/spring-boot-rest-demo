@@ -21,7 +21,7 @@ const fetchCustomersStart = () => {
     };
 }
 
-const buildTokenConfig = token => {
+export const buildTokenConfig = token => {
   var config = {
     headers: {
       'Authorization': 'Bearer ' + token

@@ -35,7 +35,6 @@ class Layout extends Component {
         let redirect = null;
         if (this.state.path) {             
             redirect = <Redirect to ={this.state.path} />
-            console.log('layout',this.state.path);
         }
         return (
             <div className="LayoutRoot">

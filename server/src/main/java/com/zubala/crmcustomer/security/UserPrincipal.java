@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zubala.crmcustomer.entity.User;
 
+@SuppressWarnings("serial")
 public class UserPrincipal implements UserDetails {
     private Long id;
 
