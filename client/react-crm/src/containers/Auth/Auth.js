@@ -10,8 +10,8 @@ import './Auth.css';
 class Auth extends Component {
 
   state = {
-      username: '',
-      password: '',
+      username: "",
+      password: "",
   };
 
   usernameChangedHandler(event) {

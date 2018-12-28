@@ -25,6 +25,10 @@
     margin: 10px !important;
 }
 
+.ProfileInput {
+    width: 260px;
+}
+
 .IconMargin {
     margin-right: 10px;
 }

@@ -8,12 +8,12 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import TextField from '@material-ui/core/TextField';
 import axios from '../../axios-crm';
 import { buildTokenConfig } from '../../store/actions/customers';
+import { checkValidity } from '../../shared/utils';
 
 import { CUSTOMERS_PATH } from '../Customers/Customers';
 
 import './Profile.css';
 
-const LOGIN = 'login';
 const PASSWORD = 'password';
 const PASSWORD2 = 'password2';
 const EMAIL = 'email';
@@ -26,22 +26,40 @@ class Profile extends Component {
         username: "",
         password: "",
         password2: "",
+        phone: "",
         email: "",
-        phone: ""
+        error: {
+            password: "",
+            password2: "",
+            email: "",
+            phone: ""
+        }
     }
 
     submitHandler = (event) => {
         event.preventDefault();
-
-        if (this.state.password !== this.state.password2) {
-            
+        if (this.state.password !== this.state.password2) {            
             return;
         }
     }
 
     componentDidMount = () => {
         axios.get('/auth/profile', buildTokenConfig(this.props.token))
-            .then (r => console.log(r.data))
+            .then (r => {
+                console.log(r.data)
+                this.setState({                    
+                    username: r.data.username,
+                    userId: r.data.userId,
+                    email: 'todo@todo.pl',
+                    phone: '997',
+                    error: {
+                        password: "Password can not be empty",
+                        password2: "",
+                        email: "",
+                        phone: ""
+                    }
+                });
+            })
             .catch (e => {
                 let error = e;
                 if (e.response) {
@@ -51,15 +69,53 @@ class Profile extends Component {
             })
     }
 
-    onFieldChange = (event, type) => {
+    onFieldChange = (event, type) => {        
+        let errorText = "";
+        if (type === PASSWORD || type === PASSWORD2) {
+            if (!checkValidity(event.target.value, {required: true, minLength: 6})) {
+                errorText = "Password should have at least 6 characters";
+            } else {
+                let p1, p2;
+                if (type === PASSWORD) {
+                    p1 = event.target.value;
+                    p2 = this.state.password2; 
+                } else {
+                    p2 = event.target.value;
+                    p1 = this.state.password; 
+                }
+                if (p1 !== p2) {
+                    errorText = "Passwords must match";
+                }
+            }
+        } else if (type === EMAIL) {
+            if (!checkValidity(event.target.value, {required: true, isEmail: true})) {
+                errorText = "Wrong email";
+            }
+        } else if (type === PHONE) {
+            if (!checkValidity(event.target.value, {isPhone: true})) {
+                errorText = "Wrong phone";
+            }
+        }
+
         this.setState({
-            ...this.state,
-            [type]: event.target.value
+            [type]: event.target.value,
+            error: {
+                ...this.state.error,
+                [type]: errorText
+            }
         });
     }
 
     onCancel = () => {
         this.setState({redirectTo: CUSTOMERS_PATH})
+    }
+
+    isError = () => {
+        const error = this.state.error.password.length !== 0 
+            || this.state.error.password2.length !== 0
+            || this.state.error.phone.length !== 0
+            || this.state.error.email.length !== 0;
+        return error;
     }
 
     render() {
@@ -79,9 +135,7 @@ class Profile extends Component {
                         id="login"
                         label="Login"
                         className="ProfileInput"
-                        value={this.state.login}
-                        // onChange={(event) => this.onFieldChange(event, LOGIN)}
-                        // autoComplete="login"
+                        value={this.state.username}
                         margin="normal" 
                         InputProps={{
                             readOnly: true,
@@ -96,6 +150,8 @@ class Profile extends Component {
                         type="password"
                         value={this.state.password}
                         onChange={(event) => this.onFieldChange(event, PASSWORD)}
+                        helperText={this.state.error.password}
+                        error={this.state.error.password.length === 0 ? false : true}
                         autoComplete="current-password"
                         margin="normal" />
 
@@ -105,8 +161,10 @@ class Profile extends Component {
                         label="Repeat password"
                         className="ProfileInput"
                         type="password"
-                        value={this.state.password}
+                        value={this.state.password2}
                         onChange={(event) => this.onFieldChange(event, PASSWORD2)}
+                        helperText={this.state.error.password}
+                        error={this.state.error.password.length === 0 ? false : true}
                         autoComplete="current-password"
                         margin="normal" />
 
@@ -116,8 +174,10 @@ class Profile extends Component {
                         label="E-mail"
                         className="ProfileInput"
                         type="email"
-                        value={this.state.email}
+                        value={this.state.email}                        
                         onChange={(event) => this.onFieldChange(event, EMAIL)}
+                        helperText={this.state.error.email}
+                        error={this.state.error.email.length === 0 ? false : true}
                         autoComplete="email"
                         margin="normal" />
 
@@ -128,12 +188,14 @@ class Profile extends Component {
                         type="phone"
                         value={this.state.phone}
                         onChange={(event) => this.onFieldChange(event, PHONE)}
+                        helperText={this.state.error.phone}
+                        error={this.state.error.phone.length === 0 ? false : true}
                         autoComplete="phone"
                         margin="normal" />
                         
                     <div className="ProfileButtons">
                         <div className="ProfileButton" >
-                            <Button variant="contained" color="primary" style={{width: '100%'}} type="submit">
+                            <Button variant="contained" disabled={this.isError()} color="primary" style={{width: '100%'}} type="submit">
                                 <SaveIcon className="IconMargin" />Save
                             </Button>
                         </div>
