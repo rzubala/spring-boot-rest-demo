@@ -16,8 +16,6 @@ import './Profile.css';
 
 const PASSWORD = 'password';
 const PASSWORD2 = 'password2';
-const EMAIL = 'email';
-const PHONE = 'phone';
 
 class Profile extends Component {
 
@@ -31,20 +29,66 @@ class Profile extends Component {
             phone: "",
             email: ""
         },
+        rules: {
+            password: {
+                required: true, 
+                minLength: 6,
+                errorText: "Password should have at least 6 characters"
+            },
+            password2: {
+                required: true, 
+                minLength: 6,
+                errorText: "Password should have at least 6 characters"
+            },
+            email: {
+                required: true, 
+                isEmail: true,
+                errorText: "Wrong email"
+            },
+            phone: {
+                required: false,
+                isPhone: true,
+                errorText: "Wrong phone"
+            }
+        },
         error: {
             password: "",
             password2: "",
             email: "",
             phone: ""
+        },
+        fields: {
+            password: {
+                id: "password",
+                label: "Password",
+                type: "password",
+                autoComplete: "current-password"
+            },
+            password2: {
+                id: "password2",
+                label: "Repeat password",
+                type: "password",
+                autoComplete: "current-password"
+            },
+            email: {
+                id: "e-mail",
+                label: "E-mail",
+                type: "email",
+                autoComplete: "email"
+            },
+            phone: {
+                id: "phone",
+                label: "Phone",
+                type: "phone",
+                autoComplete: "phone"
+            }
         }
     }
 
     submitHandler = (event) => {
         event.preventDefault();
         axios.put('/auth/profile', this.state.user, buildTokenConfig(this.props.token))
-            .then(r => {
-                console.log(r.data)
-            })
+            .then(r => this.setState({redirectTo: CUSTOMERS_PATH}))
             .catch(e => {
                 let error = e;
                 if (e.response) {
@@ -62,6 +106,8 @@ class Profile extends Component {
                     username: r.data.username,
                     email: r.data.email,
                     phone: r.data.phone,
+                    password: "",
+                    password2: ""
                 }
                 this.setState({                    
                     user: user,
@@ -83,44 +129,50 @@ class Profile extends Component {
     }
 
     onFieldChange = (event, type) => {        
-        let errorText = "";
-        if (type === PASSWORD || type === PASSWORD2) {
-            if (!checkValidity(event.target.value, {required: true, minLength: 6})) {
-                errorText = "Password should have at least 6 characters";
-            } else {
-                let p1, p2;
-                if (type === PASSWORD) {
-                    p1 = event.target.value;
-                    p2 = this.state.user.password2; 
-                } else {
-                    p2 = event.target.value;
-                    p1 = this.state.user.password; 
-                }
-                if (p1 !== p2) {
-                    errorText = "Passwords must match";                    
-                }
-                console.log(p1, p2, errorText)
-            }
-        } else if (type === EMAIL) {
-            if (!checkValidity(event.target.value, {required: true, isEmail: true})) {
-                errorText = "Wrong email";
-            }
-        } else if (type === PHONE) {
-            if (!checkValidity(event.target.value, {isPhone: true})) {
-                errorText = "Wrong phone";
-            }
-        }
-
         const user = {
             ...this.state.user,
             [type]: event.target.value
         }
-        if (type === PASSWORD2) {
-            type = PASSWORD;
-        }
-        const error = {
+        let errorText = "";
+        const rules = this.state.rules[type];
+        if (!checkValidity(event.target.value, rules)) {
+            errorText = rules.errorText;
+        }    
+        let error = {
             ...this.state.error,
             [type]: errorText
+        }
+
+        if (errorText.length === 0 && (type === PASSWORD || type === PASSWORD2)) {            
+            let p1, p2;
+            let otherPass;
+            if (type === PASSWORD) {
+                p1 = event.target.value;
+                p2 = this.state.user.password2; 
+                otherPass = PASSWORD2;
+            } else {
+                p2 = event.target.value;
+                p1 = this.state.user.password; 
+                otherPass = PASSWORD;
+            }
+            if (p1 !== p2) {
+                errorText = "Passwords must match";                    
+                error = {
+                    ...error,
+                    [PASSWORD]: errorText,
+                    [PASSWORD2]: errorText
+                };
+            } else {
+                let otherPassText = ""
+                if (!checkValidity(this.state.user[otherPass], this.state.rules[otherPass])) {
+                    otherPassText = this.state.rules[otherPass].errorText;
+                }       
+                error = {
+                    ...error,
+                    [type]: errorText,
+                    [otherPass]: otherPassText
+                }
+            }    
         }
         this.setState({
             user: user,
@@ -133,11 +185,14 @@ class Profile extends Component {
     }
 
     isError = () => {
-        const error = this.state.error.password.length !== 0 
-            || this.state.error.password2.length !== 0
-            || this.state.error.phone.length !== 0
-            || this.state.error.email.length !== 0;
-        return error;
+        const errors = [];
+        for (let elerr in this.state.fields) {
+            errors.push(elerr);
+        }
+        const result = errors.reduce((res, el) => {
+            return this.state.error[el].length !== 0 | res;
+        }, false)
+        return (result > 0);
     }
 
     render() {
@@ -146,6 +201,28 @@ class Profile extends Component {
         if (this.state.redirectTo) {
             redirect = <Redirect to={this.state.redirectTo} />
         }
+
+        let fields = []
+        for (let el in this.state.fields) {
+            fields.push(el);
+        }
+
+        let inputs = fields.map(type => {
+            return (
+                <TextField
+                key={this.state.fields[type].id}
+                required={this.state.rules[type].required}
+                id={this.state.fields[type].id}
+                label={this.state.fields[type].label}
+                type={this.state.fields[type].type}
+                autoComplete={this.state.fields[type].autoComplete}
+                className="ProfileInput"                
+                value={this.state.user[type]}                        
+                onChange={(event) => this.onFieldChange(event, type)}
+                helperText={this.state.error[type]}
+                error={this.state.error[type].length === 0 ? false : true}
+                margin="normal" />);
+        });
 
         return (
             <div className="Profile">
@@ -163,58 +240,8 @@ class Profile extends Component {
                             readOnly: true,
                         }}
                         />
-
-                    <TextField
-                        required
-                        id="password"
-                        label="Password"
-                        className="ProfileInput"
-                        type="password"
-                        value={this.state.user.password}
-                        onChange={(event) => this.onFieldChange(event, PASSWORD)}
-                        helperText={this.state.error.password}
-                        error={this.state.error.password.length === 0 ? false : true}
-                        autoComplete="current-password"
-                        margin="normal" />
-
-                    <TextField
-                        required
-                        id="password2"
-                        label="Repeat password"
-                        className="ProfileInput"
-                        type="password"
-                        value={this.state.user.password2}
-                        onChange={(event) => this.onFieldChange(event, PASSWORD2)}
-                        helperText={this.state.error.password}
-                        error={this.state.error.password.length === 0 ? false : true}
-                        autoComplete="current-password"
-                        margin="normal" />
-
-                    <TextField
-                        required
-                        id="e-mail"
-                        label="E-mail"
-                        className="ProfileInput"
-                        type="email"
-                        value={this.state.user.email}                        
-                        onChange={(event) => this.onFieldChange(event, EMAIL)}
-                        helperText={this.state.error.email}
-                        error={this.state.error.email.length === 0 ? false : true}
-                        autoComplete="email"
-                        margin="normal" />
-
-                    <TextField
-                        id="phone"
-                        label="Phone"
-                        className="ProfileInput"
-                        type="phone"
-                        value={this.state.user.phone}
-                        onChange={(event) => this.onFieldChange(event, PHONE)}
-                        helperText={this.state.error.phone}
-                        error={this.state.error.phone.length === 0 ? false : true}
-                        autoComplete="phone"
-                        margin="normal" />
-                        
+                    {inputs}    
+                      
                     <div className="ProfileButtons">
                         <div className="ProfileButton" >
                             <Button variant="contained" disabled={this.isError()} color="primary" style={{width: '100%'}} type="submit">
