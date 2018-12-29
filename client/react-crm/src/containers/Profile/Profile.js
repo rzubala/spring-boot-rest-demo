@@ -23,11 +23,14 @@ class Profile extends Component {
 
     state = {
         redirectTo: null,
-        username: "",
-        password: "",
-        password2: "",
-        phone: "",
-        email: "",
+        user: {
+            id: "",
+            username: "",
+            password: "",
+            password2: "",
+            phone: "",
+            email: ""
+        },
         error: {
             password: "",
             password2: "",
@@ -38,20 +41,30 @@ class Profile extends Component {
 
     submitHandler = (event) => {
         event.preventDefault();
-        if (this.state.password !== this.state.password2) {            
-            return;
-        }
+        axios.put('/auth/profile', this.state.user, buildTokenConfig(this.props.token))
+            .then(r => {
+                console.log(r.data)
+            })
+            .catch(e => {
+                let error = e;
+                if (e.response) {
+                  error = e.response.data.message;
+                }
+                console.log(error);          
+            })
     }
 
     componentDidMount = () => {
         axios.get('/auth/profile', buildTokenConfig(this.props.token))
             .then (r => {
-                console.log(r.data)
-                this.setState({                    
+                const user = {
+                    id: r.data.id,
                     username: r.data.username,
-                    userId: r.data.userId,
-                    email: 'todo@todo.pl',
-                    phone: '997',
+                    email: r.data.email,
+                    phone: r.data.phone,
+                }
+                this.setState({                    
+                    user: user,
                     error: {
                         password: "Password can not be empty",
                         password2: "",
@@ -78,14 +91,15 @@ class Profile extends Component {
                 let p1, p2;
                 if (type === PASSWORD) {
                     p1 = event.target.value;
-                    p2 = this.state.password2; 
+                    p2 = this.state.user.password2; 
                 } else {
                     p2 = event.target.value;
-                    p1 = this.state.password; 
+                    p1 = this.state.user.password; 
                 }
                 if (p1 !== p2) {
-                    errorText = "Passwords must match";
+                    errorText = "Passwords must match";                    
                 }
+                console.log(p1, p2, errorText)
             }
         } else if (type === EMAIL) {
             if (!checkValidity(event.target.value, {required: true, isEmail: true})) {
@@ -97,12 +111,20 @@ class Profile extends Component {
             }
         }
 
+        const user = {
+            ...this.state.user,
+            [type]: event.target.value
+        }
+        if (type === PASSWORD2) {
+            type = PASSWORD;
+        }
+        const error = {
+            ...this.state.error,
+            [type]: errorText
+        }
         this.setState({
-            [type]: event.target.value,
-            error: {
-                ...this.state.error,
-                [type]: errorText
-            }
+            user: user,
+            error: error,                
         });
     }
 
@@ -135,7 +157,7 @@ class Profile extends Component {
                         id="login"
                         label="Login"
                         className="ProfileInput"
-                        value={this.state.username}
+                        value={this.state.user.username}
                         margin="normal" 
                         InputProps={{
                             readOnly: true,
@@ -148,7 +170,7 @@ class Profile extends Component {
                         label="Password"
                         className="ProfileInput"
                         type="password"
-                        value={this.state.password}
+                        value={this.state.user.password}
                         onChange={(event) => this.onFieldChange(event, PASSWORD)}
                         helperText={this.state.error.password}
                         error={this.state.error.password.length === 0 ? false : true}
@@ -161,7 +183,7 @@ class Profile extends Component {
                         label="Repeat password"
                         className="ProfileInput"
                         type="password"
-                        value={this.state.password2}
+                        value={this.state.user.password2}
                         onChange={(event) => this.onFieldChange(event, PASSWORD2)}
                         helperText={this.state.error.password}
                         error={this.state.error.password.length === 0 ? false : true}
@@ -174,7 +196,7 @@ class Profile extends Component {
                         label="E-mail"
                         className="ProfileInput"
                         type="email"
-                        value={this.state.email}                        
+                        value={this.state.user.email}                        
                         onChange={(event) => this.onFieldChange(event, EMAIL)}
                         helperText={this.state.error.email}
                         error={this.state.error.email.length === 0 ? false : true}
@@ -186,7 +208,7 @@ class Profile extends Component {
                         label="Phone"
                         className="ProfileInput"
                         type="phone"
-                        value={this.state.phone}
+                        value={this.state.user.phone}
                         onChange={(event) => this.onFieldChange(event, PHONE)}
                         helperText={this.state.error.phone}
                         error={this.state.error.phone.length === 0 ? false : true}

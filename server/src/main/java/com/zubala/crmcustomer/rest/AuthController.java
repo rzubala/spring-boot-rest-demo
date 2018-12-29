@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.zubala.crmcustomer.data.ApiResponse;
 import com.zubala.crmcustomer.data.AuthorizationRequest;
 import com.zubala.crmcustomer.data.AuthorizationResponse;
+import com.zubala.crmcustomer.data.UserRequest;
 import com.zubala.crmcustomer.entity.Role;
 import com.zubala.crmcustomer.entity.RoleName;
 import com.zubala.crmcustomer.entity.User;
@@ -96,5 +98,20 @@ public class AuthController {
 		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 		User user = userRepository.findById(userPrincipal.getId()).orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
 		return ResponseEntity.ok(user);
+	}
+	
+	@PutMapping("/profile")
+	private ResponseEntity<?> updateProfile(@Valid @RequestBody UserRequest request) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+		if (!userPrincipal.getId().equals(request.getId())) {
+        	return ResponseEntity.badRequest().body(new ApiResponse(false, "Bad user id!"));
+		}
+		if (!request.getPassword().equals(request.getPassword2())) {
+        	return ResponseEntity.badRequest().body(new ApiResponse(false, "Password does not match!"));
+		}
+        String password = passwordEncoder.encode(request.getPassword());
+		userRepository.setUserProfileById(password, request.getEmail(), request.getPhone(), request.getId());
+        return ResponseEntity.ok(new ApiResponse(true, "User updated successfully"));
 	}
 }
