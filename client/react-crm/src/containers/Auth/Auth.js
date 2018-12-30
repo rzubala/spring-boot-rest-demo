@@ -11,7 +11,7 @@ class Auth extends Component {
 
   state = {
       username: "",
-      password: "",
+      password: ""
   };
 
   usernameChangedHandler(event) {
@@ -31,6 +31,10 @@ class Auth extends Component {
     input && input.focus();
   };
 
+  onRegister = () => {
+    this.setState({register: true});
+  }
+
   render () {
       let redirect = null;
       if (this.props.token) {
@@ -40,10 +44,15 @@ class Auth extends Component {
       if (this.props.error) {
         error = <p>error: {this.props.error}</p>
       }
+      let register = null;
+      if (this.state.register) {             
+        register = <Redirect to ="/register" />
+      }
       return (
         <div className="Auth" >
           {redirect}
           {error}
+          {register}
           <h1>CRM demo</h1>
           <form className="AuthForm" onSubmit={this.submitHandler}>
             <TextField
@@ -67,7 +76,7 @@ class Auth extends Component {
             />
             <div className="AuthButtons">
               <Button className="AuthButton" variant="outlined" color="primary" type="submit">SUBMIT</Button>
-              <Button className="AuthButton" variant="outlined" color="secondary">Register</Button>
+              <Button className="AuthButton" variant="outlined" color="secondary" onClick={this.onRegister}>Register</Button>
             </div>
           </form>
           <div className="AuthAuthor">

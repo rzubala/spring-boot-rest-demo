@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Auth from './containers/Auth/Auth';
+import Register from './components/Register/Register';
 import Layout from './hoc/Layout/Layout';
 import Aux from './hoc/Aux/Aux';
 import Customers from './containers/Customers/Customers';
@@ -22,6 +23,7 @@ class App extends Component {
     let routes = (
       <Switch>
         <Route path = "/login" component={Auth} />
+        <Route path = "/register" component={Register} />
         <Route path ="/" exact component={Auth} />
         <Redirect to="/" />
       </Switch>);

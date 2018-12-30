@@ -14,10 +14,24 @@ import { CUSTOMERS_PATH } from '../Customers/Customers';
 
 import './Profile.css';
 
+const USERNAME = 'username';
 const PASSWORD = 'password';
 const PASSWORD2 = 'password2';
 
 class Profile extends Component {
+
+    constructor(props) {
+        super(props);
+        const updatedState = {
+            ...this.state,
+            register: props.register,
+        };        
+        this.state = updatedState;
+    }    
+
+    componentWillReceiveProps = (nextProps) => {
+        this.setState({register: nextProps.register});
+    }
 
     state = {
         redirectTo: null,
@@ -30,6 +44,11 @@ class Profile extends Component {
             email: ""
         },
         rules: {
+            username: {
+                required: true, 
+                minLength: 3,
+                errorText: "Username should have at least 3 characters"
+            },
             password: {
                 required: true, 
                 minLength: 6,
@@ -52,12 +71,19 @@ class Profile extends Component {
             }
         },
         error: {
+            username: "",
             password: "",
             password2: "",
             email: "",
             phone: ""
         },
         fields: {
+            username: {
+                id: "login",
+                label: "Login",
+                type: "text",
+                autoComplete: "username"
+            },
             password: {
                 id: "password",
                 label: "Password",
@@ -87,18 +113,25 @@ class Profile extends Component {
 
     submitHandler = (event) => {
         event.preventDefault();
-        axios.put('/auth/profile', this.state.user, buildTokenConfig(this.props.token))
-            .then(r => this.setState({redirectTo: CUSTOMERS_PATH}))
-            .catch(e => {
-                let error = e;
-                if (e.response) {
-                  error = e.response.data.message;
-                }
-                console.log(error);          
-            })
+        if (this.state.register) {
+            
+        } else {
+            axios.put('/auth/profile', this.state.user, buildTokenConfig(this.props.token))
+                .then(r => this.setState({redirectTo: CUSTOMERS_PATH}))
+                .catch(e => {
+                    let error = e;
+                    if (e.response) {
+                    error = e.response.data.message;
+                    }
+                    console.log(error);          
+                })
+        }
     }
 
     componentDidMount = () => {
+        if (this.state.register) {
+            return;
+        }
         axios.get('/auth/profile', buildTokenConfig(this.props.token))
             .then (r => {
                 const user = {
@@ -112,6 +145,7 @@ class Profile extends Component {
                 this.setState({                    
                     user: user,
                     error: {
+                        username: "",
                         password: "Password can not be empty",
                         password2: "",
                         email: "",
@@ -181,7 +215,11 @@ class Profile extends Component {
     }
 
     onCancel = () => {
-        this.setState({redirectTo: CUSTOMERS_PATH})
+        if (this.state.register) {
+            this.setState({redirectTo: "/"});
+        } else {
+            this.setState({redirectTo: CUSTOMERS_PATH});
+        }
     }
 
     isError = () => {
@@ -208,6 +246,22 @@ class Profile extends Component {
         }
 
         let inputs = fields.map(type => {
+            if (!this.state.register && type === USERNAME) {
+                return (
+                    <TextField
+                    key={this.state.fields[type].id}
+                    id="login"
+                    label="Login"
+                    className="ProfileInput"
+                    value={this.state.user.username}
+                    margin="normal" 
+                    autoComplete="username"
+                    InputProps={{
+                        readOnly: true,
+                    }}
+                    />
+                );
+            }
             return (
                 <TextField
                 key={this.state.fields[type].id}
@@ -226,26 +280,17 @@ class Profile extends Component {
 
         return (
             <div className="Profile">
-                <h1>Profile</h1>
+                {this.state.register ? <h1>Register</h1> : <h1>Profile</h1>}                
                 {redirect}
                 <form className="ProfileForm" onSubmit={this.submitHandler}>                   
 
-                    <TextField
-                        id="login"
-                        label="Login"
-                        className="ProfileInput"
-                        value={this.state.user.username}
-                        margin="normal" 
-                        InputProps={{
-                            readOnly: true,
-                        }}
-                        />
+
                     {inputs}    
                       
                     <div className="ProfileButtons">
                         <div className="ProfileButton" >
                             <Button variant="contained" disabled={this.isError()} color="primary" style={{width: '100%'}} type="submit">
-                                <SaveIcon className="IconMargin" />Save
+                                <SaveIcon className="IconMargin" />{this.state.register? "Signup" : "Save"}
                             </Button>
                         </div>
                         <div className="ProfileButton">
