@@ -2,12 +2,14 @@ package com.zubala.crmcustomer.data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class UserRequest {
-    @NotNull
     private Long id;
+
+    @NotBlank
+    @Size(min = 3)
+    private String username;
     
     @NotBlank
     @Size(min = 6, max = 100)
@@ -63,6 +65,14 @@ public class UserRequest {
 
 	public void setPassword2(String password2) {
 		this.password2 = password2;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 }

@@ -114,7 +114,15 @@ class Profile extends Component {
     submitHandler = (event) => {
         event.preventDefault();
         if (this.state.register) {
-            
+            axios.post('/auth/signup', this.state.user)
+                .then(r => this.setState({redirectTo: "/"}))
+                .catch(e => {
+                    let error = e;
+                    if (e.response) {
+                    error = e.response.data.message;
+                    }
+                    console.log(error);          
+                })
         } else {
             axios.put('/auth/profile', this.state.user, buildTokenConfig(this.props.token))
                 .then(r => this.setState({redirectTo: CUSTOMERS_PATH}))

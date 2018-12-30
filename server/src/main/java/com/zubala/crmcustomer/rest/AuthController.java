@@ -71,12 +71,14 @@ public class AuthController {
 	}
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody AuthorizationRequest request) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
         	return ResponseEntity.badRequest().body(new ApiResponse(false, "Username is already taken!"));
         }
         String password = passwordEncoder.encode(request.getPassword());
         User user = new User(request.getUsername(), password);
+        user.setEmail(request.getEmail());
+        user.setPhone(request.getPhone());
         Role userRole = roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new ApiException("User Role not set."));
         user.setRoles(Collections.singleton(userRole));
         userRepository.save(user);
