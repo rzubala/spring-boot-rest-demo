@@ -1,0 +1,29 @@
+.CustomSnackbarContentSuccess {
+    background-color: green !important;
+}
+
+.CustomSnackbarContentError {
+    background-color: #d32f2f !important;
+}
+
+.CustomSnackbarContentInfo {
+    background-color: #303f9f !important;
+}
+
+.CustomSnackbarContentWarning {
+    background-color: #ffa000 !important;
+}
+
+.CustomSnackbarContentIcon {
+    font-size: 20px;
+}
+
+.CustomSnackbarContentIconVariant {
+    opacity: 0.9;
+    margin-right: 8px;
+}
+
+.CustomSnackbarContentMessage {
+    display: flex;
+    align-items: center;
+}

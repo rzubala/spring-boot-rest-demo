@@ -9,6 +9,7 @@ import TextField from '@material-ui/core/TextField';
 import axios from '../../axios-crm';
 import { buildTokenConfig } from '../../store/actions/customers';
 import { checkValidity } from '../../shared/utils';
+import CustomSnackbar from '../../components/UI/CustomSnackbar/CustomSnackbar';
 
 import { CUSTOMERS_PATH } from '../Customers/Customers';
 
@@ -34,6 +35,7 @@ class Profile extends Component {
     }
 
     state = {
+        infoOpen: true,
         redirectTo: null,
         user: {
             id: "",
@@ -241,6 +243,10 @@ class Profile extends Component {
         return (result > 0);
     }
 
+    handleClose = () => {
+        this.setState({ infoOpen: false });
+    }
+
     render() {
 
         let redirect = null
@@ -308,6 +314,13 @@ class Profile extends Component {
                         </div>          
                     </div>
                 </form>    
+
+                <CustomSnackbar 
+                    snackbarOpen={this.state.infoOpen}
+                    onSnackbarClose={this.handleClose}
+                    variant="success"
+                    message="This is a success message!"
+                />
             </div>
         );
     }
