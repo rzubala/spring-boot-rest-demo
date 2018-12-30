@@ -1,10 +1,8 @@
-.Auth {
-  margin: 20px auto;
-  padding: 10px;
-  box-sizing: border-box;
-  width: 80%;
+.Auth {	
+	color: #606060;	
+	margin-top: 50px;
+  box-sizing: border-box;  
   text-align: center;
-  border: 1px solid #eee;
   display: flex;
 	flex-direction: column;
 	flex-wrap: nowrap;
@@ -14,10 +12,42 @@
 }
 
 .AuthForm {
+	border: 1px solid #eee;
+	margin: 20px auto;
+	padding: 30px;
+	width: 60%;
   display: flex;
 	flex-direction: column;
 	flex-wrap: nowrap;
 	justify-content: center;
 	align-items: center;
 	align-content: stretch;
+}
+
+.AuthButtons {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.AuthButtons > button {
+  margin: 5px;
+}
+
+.AuthButton {
+	width: 120px;
+}
+
+.AuthAuthor {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-top: 50px;
+	font-size: 14px;
+}
+
+.AuthAuthor > div {
+  margin: 10px;
 }

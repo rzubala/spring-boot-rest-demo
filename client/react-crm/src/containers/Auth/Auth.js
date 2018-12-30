@@ -44,6 +44,7 @@ class Auth extends Component {
         <div className="Auth" >
           {redirect}
           {error}
+          <h1>CRM demo</h1>
           <form className="AuthForm" onSubmit={this.submitHandler}>
             <TextField
               inputRef={this.focusUsernameInputField}
@@ -64,9 +65,20 @@ class Auth extends Component {
               variant="outlined"
               autoComplete="password"
             />
-            <Button variant="outlined" color="primary" type="submit">SUBMIT</Button>
+            <div className="AuthButtons">
+              <Button className="AuthButton" variant="outlined" color="primary" type="submit">SUBMIT</Button>
+              <Button className="AuthButton" variant="outlined" color="secondary">Register</Button>
+            </div>
           </form>
-        </div>
+          <div className="AuthAuthor">
+            <div>
+              <span style={{fontSize: "16px"}}>Created by: </span><a href="mailto:rafal@zubala.com" style={{fontSize: "16px"}}>Rafał Zubala</a>
+            </div>              
+            <div>
+              Visit me at: <a href="http://rafal.zubala.com">rafal.zubala.com</a>
+            </div>
+          </div>
+        </div>  
       );
   }
 }

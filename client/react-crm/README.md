@@ -1,11 +1,12 @@
 TODO:
-- user panel
 - signup
 - mobile screens
 - global network error
 - pagination
+- admin panel
 
 ---
++ user panel
 + spinner
 + login from local storage
 + customer actions: CRUD

@@ -89,7 +89,7 @@ class Customer extends Component {
         if (this.state.customer) {
             customerRender = (
                 <div>
-                    <h1>Customer: {this.state.customer.id}</h1>
+                    <h1 style={{textAlign: "center"}}>Customer: {this.state.customer.id}</h1>
                     <form onSubmit={this.submitHandler}>
                         <Input className="CustomerInput" autoComplete='given-name' placeholder="First name" value={this.state.customer.firstName} onChange={(event) => this.onFieldChange(event, FIRST_NAME)}/>
                         <Input className="CustomerInput" autoComplete='family-name' placeholder="Last name"  value={this.state.customer.lastName} onChange={(event) => this.onFieldChange(event, LAST_NAME)}/>
