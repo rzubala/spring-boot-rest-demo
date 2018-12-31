@@ -35,7 +35,9 @@ class Profile extends Component {
     }
 
     state = {
-        infoOpen: true,
+        infoOpen: false,
+        infoMessage: "",
+        infoType: "error",
         redirectTo: null,
         user: {
             id: "",
@@ -120,10 +122,24 @@ class Profile extends Component {
                 .then(r => this.setState({redirectTo: "/"}))
                 .catch(e => {
                     let error = e;
+                    let field;
                     if (e.response) {
-                    error = e.response.data.message;
+                        error = e.response.data.message;
+                        field = e.response.data.field;
                     }
-                    console.log(error);          
+                    console.log(error, field);
+                    if (field) {
+                        let errorState = {
+                            ...this.state.error,
+                            [field]: error
+                        }                
+                        this.setState({error: errorState});
+                    }          
+                    this.setState({
+                        infoOpen: true,
+                        infoType: "error",
+                        infoMessage: error
+                    });
                 })
         } else {
             axios.put('/auth/profile', this.state.user, buildTokenConfig(this.props.token))
@@ -318,8 +334,8 @@ class Profile extends Component {
                 <CustomSnackbar 
                     snackbarOpen={this.state.infoOpen}
                     onSnackbarClose={this.handleClose}
-                    variant="success"
-                    message="This is a success message!"
+                    variant={this.state.infoType}
+                    message={this.state.infoMessage}
                 />
             </div>
         );

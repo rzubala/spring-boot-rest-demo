@@ -1,17 +1,24 @@
 package com.zubala.crmcustomer.data;
 
 public class ApiResponse {
-    
-	public ApiResponse() {}
-	
-	public ApiResponse(Boolean success, String message) {
-		this.success = success;
-		this.message = message;
-	}
 
 	private Boolean success;
 
     private String message;
+    
+    private String field;
+    
+	public ApiResponse() {}
+	
+	public ApiResponse(Boolean success, String message, String field) {
+		this.success = success;
+		this.message = message;
+		this.field = field;
+	}
+
+	public ApiResponse(Boolean success, String message) {
+		this(success, message, null);
+	}
 
 	public Boolean getSuccess() {
 		return success;
@@ -27,6 +34,14 @@ public class ApiResponse {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	public String getField() {
+		return field;
+	}
+
+	public void setField(String field) {
+		this.field = field;
 	}
 
 }
