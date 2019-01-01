@@ -121,37 +121,46 @@ class Profile extends Component {
             axios.post('/auth/signup', this.state.user)
                 .then(r => this.setState({redirectTo: "/"}))
                 .catch(e => {
-                    let error = e;
-                    let field;
+                    let errorState;
                     if (e.response) {
-                        error = e.response.data.message;
-                        field = e.response.data.field;
+                        errorState = this.mapValidationError(e.response.data);
                     }
-                    console.log(error, field);
-                    if (field) {
-                        let errorState = {
-                            ...this.state.error,
-                            [field]: error
-                        }                
-                        this.setState({error: errorState});
-                    }          
-                    this.setState({
-                        infoOpen: true,
-                        infoType: "error",
-                        infoMessage: error
-                    });
+                    if (errorState) {
+                        this.setState({
+                            infoOpen: true,
+                            infoType: "error",
+                            infoMessage: e.response.data[0].message,
+                            error: errorState
+                        });
+                    } else {
+                        console.log(e);
+                    }
                 })
         } else {
             axios.put('/auth/profile', this.state.user, buildTokenConfig(this.props.token))
                 .then(r => this.setState({redirectTo: CUSTOMERS_PATH}))
                 .catch(e => {
                     let error = e;
-                    if (e.response) {
-                    error = e.response.data.message;
+                    if (e.response.data) {
+                        const errorState = this.mapValidationError(e.response.data);
+                        this.setState({error: errorState});
+                        return;
                     }
                     console.log(error);          
                 })
         }
+    }
+
+    mapValidationError = (errordata) => {
+        let errorState = {...this.state.error};
+        errordata.map(d => {
+            errorState = {
+                ...errorState,
+                [d.field]: d.message
+            }
+            return d;
+        });                        
+        return errorState;
     }
 
     componentDidMount = () => {

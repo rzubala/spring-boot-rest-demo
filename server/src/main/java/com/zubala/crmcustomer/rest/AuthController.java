@@ -1,6 +1,8 @@
 package com.zubala.crmcustomer.rest;
 
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -24,6 +26,7 @@ import com.zubala.crmcustomer.data.ApiResponse;
 import com.zubala.crmcustomer.data.AuthorizationRequest;
 import com.zubala.crmcustomer.data.AuthorizationResponse;
 import com.zubala.crmcustomer.data.UserRequest;
+import com.zubala.crmcustomer.data.ValidationFieldError;
 import com.zubala.crmcustomer.entity.Role;
 import com.zubala.crmcustomer.entity.RoleName;
 import com.zubala.crmcustomer.entity.User;
@@ -73,7 +76,12 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-        	return ResponseEntity.badRequest().body(new ApiResponse(false, "Username is already taken!", "username"));
+        	List<ValidationFieldError> errors = new LinkedList<ValidationFieldError>();
+			ValidationFieldError vfe = new ValidationFieldError();
+			errors.add(vfe);
+			vfe.setField("username");
+			vfe.setMessage("Username is already taken!");
+        	return ResponseEntity.badRequest().body(errors);
         }
         String password = passwordEncoder.encode(request.getPassword());
         User user = new User(request.getUsername(), password);
