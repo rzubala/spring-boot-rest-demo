@@ -34,10 +34,19 @@ class TopToolbar extends Component {
         this.props.onProfile();
     }
 
+    handleAdmin = () => {
+        this.handleClose();
+        this.props.onAdmin();
+    }
+
     render() {
         const anchorEl = this.state.anchorEl;
         const isOpen = Boolean(anchorEl);
-
+        const admin = this.props.admin;
+        let menuAdmin = null;
+        if (admin) {
+            menuAdmin = <MenuItem onClick={this.handleAdmin}>Admin</MenuItem>;
+        }
         return (
             <AppBar position="static">
                 <Toolbar>
@@ -65,6 +74,7 @@ class TopToolbar extends Component {
                         onClose={this.handleClose}
                         >
                         <MenuItem onClick={this.handleProfile}>Profile</MenuItem>
+                        {menuAdmin}
                         <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
                         </Menu>
                     </div>

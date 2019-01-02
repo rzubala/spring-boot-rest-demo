@@ -14,6 +14,18 @@ import Aux from '../../../hoc/Aux/Aux'
 import './LeftDrawer.css';
 
 const leftDrawer = (props) => {
+    const admin = props.admin;
+    let menuAdmin = null;
+    if (admin) {
+        menuAdmin = (
+            <List>
+            <ListItem button key="Admin" onClick={props.onAdmin}>
+            <ListItemIcon><AccountCircle /></ListItemIcon>
+            <ListItemText primary="Admin" />
+            </ListItem>
+        </List>);
+    }
+
     const sideList = (
         <div className="LayoutList">
             <List>
@@ -22,6 +34,7 @@ const leftDrawer = (props) => {
                 <ListItemText primary="Profile" />
                 </ListItem>
             </List>
+            {menuAdmin}
             <Divider />
             <List>
                 <ListItem button key="Logout" onClick={props.onLogout}>

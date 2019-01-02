@@ -2,6 +2,7 @@ package com.zubala.crmcustomer.rest;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -60,9 +61,14 @@ public class AuthController {
         AuthorizationResponse response = new AuthorizationResponse();
         response.setToken(token);
         response.setExpiredIn(tokenProvider.getExpiredIn());        
-        response.setUserId(((UserPrincipal) authentication.getPrincipal()).getId());
+        Long userId = ((UserPrincipal) authentication.getPrincipal()).getId();
+		response.setUserId(userId);
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        response.setRoles(user.getRoles()
+        		.stream()
+        		.map(r -> r.getName().name())
+				.collect(Collectors.toList()));
         return ResponseEntity.ok(response);
-		
 	}
 
     @PostMapping("/signup")

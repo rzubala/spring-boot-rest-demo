@@ -153,12 +153,11 @@ class Profile extends Component {
 
     mapValidationError = (errordata) => {
         let errorState = {...this.state.error};
-        errordata.map(d => {
+        errordata.forEach(d => {
             errorState = {
                 ...errorState,
                 [d.field]: d.message
             }
-            return d;
         });                        
         return errorState;
     }

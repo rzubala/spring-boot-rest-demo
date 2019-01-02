@@ -1,17 +1,20 @@
 import * as actionTypes from './actionTypes';
 import axios from './../../axios-crm';
 
+export const ADMIN_ROLE = "ROLE_ADMIN";
+
 export const loginStart = () => {
   return {
     type: actionTypes.AUTH_START
   }
 };
 
-export const loginSuccess = (token, userId) => {
+export const loginSuccess = (token, userId, roles) => {
   return {
     type: actionTypes.AUTH_SUCCESS,
     token: token,
-    userId: userId
+    userId: userId,
+    roles: roles
   }
 };
 
@@ -36,7 +39,7 @@ export const login = (username, password) => {
         localStorage.setItem('expirationDate', expirationDate);
         localStorage.setItem('userId', r.data.userId);
   
-        dispatch(loginSuccess(r.data.token, r.data.userId))
+        dispatch(loginSuccess(r.data.token, r.data.userId, r.data.roles))
         dispatch(authTimeout(r.data.expiredIn));
       })
       .catch(e => {

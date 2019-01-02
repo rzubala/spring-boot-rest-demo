@@ -27,6 +27,10 @@ class Layout extends Component {
         this.setState({path: '/profile'});
     }
 
+    handleAdmin = () => {
+        this.setState({path: '/admin'});
+    }
+
     componentWillReceiveProps = (nextProps) => {
         this.setState({path: null});
     }
@@ -39,8 +43,8 @@ class Layout extends Component {
         return (
             <div className="LayoutRoot">
               {redirect}
-              <TopToolbar onToggle={this.toggleDrawer} onLogout={this.handleLogout} onProfile={this.handleProfile} />
-              <LeftDrawer open={this.state.leftDrawer} onToggle={this.toggleDrawer} onLogout={this.handleLogout} onProfile={this.handleProfile} />
+              <TopToolbar admin={this.props.admin} onToggle={this.toggleDrawer} onLogout={this.handleLogout} onProfile={this.handleProfile} onAdmin={this.handleAdmin} />
+              <LeftDrawer admin={this.props.admin} open={this.state.leftDrawer} onToggle={this.toggleDrawer} onLogout={this.handleLogout} onProfile={this.handleProfile} onAdmin={this.handleAdmin} />
               <main>
                 {this.props.children}
               </main>

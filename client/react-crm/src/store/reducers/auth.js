@@ -3,7 +3,8 @@ import * as actionTypes from '../actions/actionTypes';
 const initialState = {
   token: null,
   userId: null,
-  error: null
+  error: null,
+  roles: null
 };
 
 const authStart = (state, action) => {
@@ -19,7 +20,8 @@ const authSuccess = (state, action) => {
   return {
     ...state,
     token: action.token,
-    userId: action.userId
+    userId: action.userId,
+    roles: action.roles
   };
 };
 
