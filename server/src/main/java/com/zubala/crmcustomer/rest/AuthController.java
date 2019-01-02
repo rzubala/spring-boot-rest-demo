@@ -1,6 +1,5 @@
 package com.zubala.crmcustomer.rest;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,12 +26,8 @@ import com.zubala.crmcustomer.data.AuthorizationRequest;
 import com.zubala.crmcustomer.data.AuthorizationResponse;
 import com.zubala.crmcustomer.data.UserRequest;
 import com.zubala.crmcustomer.data.ValidationFieldError;
-import com.zubala.crmcustomer.entity.Role;
-import com.zubala.crmcustomer.entity.RoleName;
 import com.zubala.crmcustomer.entity.User;
-import com.zubala.crmcustomer.exception.ApiException;
 import com.zubala.crmcustomer.exception.ResourceNotFoundException;
-import com.zubala.crmcustomer.repository.RoleRepository;
 import com.zubala.crmcustomer.repository.UserRepository;
 import com.zubala.crmcustomer.security.JwtTokenProvider;
 import com.zubala.crmcustomer.security.UserPrincipal;
@@ -41,7 +36,7 @@ import com.zubala.crmcustomer.security.UserPrincipal;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-	private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+	protected static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
 	@Autowired
 	private JwtTokenProvider tokenProvider;
@@ -51,9 +46,6 @@ public class AuthController {
 	
 	@Autowired
 	private UserRepository userRepository;
-
-	@Autowired
-	private RoleRepository roleRepository;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -87,8 +79,6 @@ public class AuthController {
         User user = new User(request.getUsername(), password);
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
-        Role userRole = roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new ApiException("User Role not set."));
-        user.setRoles(Collections.singleton(userRole));
         userRepository.save(user);
         return ResponseEntity.ok(new ApiResponse(true, "User registered successfully"));
     }
@@ -98,7 +88,6 @@ public class AuthController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 		String token = tokenProvider.generateTokenByUserId(userPrincipal.getId());
-		logger.info("token: " + token);
 		return token;
 	}
 	
