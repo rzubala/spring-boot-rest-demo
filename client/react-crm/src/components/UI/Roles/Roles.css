@@ -1,0 +1,23 @@
+.RolesRoot {
+    display: inline-flex;
+    flex-wrap: wrap;
+}
+  
+.RolesFormControl {
+    margin: 5px;
+    min-width: 250px !important;
+    max-width: 260px;
+}
+
+.RolesChips {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.RolesChip {
+    margin: 3px;
+}
+
+.RolesNoLabel {
+    margin-top: 12px;
+}

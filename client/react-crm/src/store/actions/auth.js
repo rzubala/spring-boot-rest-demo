@@ -38,6 +38,7 @@ export const login = (username, password) => {
         localStorage.setItem('token', r.data.token);
         localStorage.setItem('expirationDate', expirationDate);
         localStorage.setItem('userId', r.data.userId);
+        localStorage.setItem('roles', r.data.roles);
   
         dispatch(loginSuccess(r.data.token, r.data.userId, r.data.roles))
         dispatch(authTimeout(r.data.expiredIn));
@@ -80,8 +81,9 @@ export const tryAutoLogin = () => {
     if (expirationDate <= new Date()) {
       dispatch(logout());
     } else {
-      const userId = localStorage.getItem('userId');      
-      dispatch(loginSuccess(token, userId))
+      const userId = localStorage.getItem('userId');    
+      const roles = localStorage.getItem('roles');  
+      dispatch(loginSuccess(token, userId, roles))
       dispatch(authTimeout(expirationDate.getTime() - new Date().getTime()));
     }
   }

@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "user")
-@JsonIgnoreProperties(value = {"password", "roles"})
+@JsonIgnoreProperties(value = {"password"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
