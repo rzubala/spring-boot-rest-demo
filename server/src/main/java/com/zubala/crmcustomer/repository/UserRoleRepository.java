@@ -7,10 +7,11 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.zubala.crmcustomer.entity.UserRole;
 import com.zubala.crmcustomer.entity.UserRole.UserRolePK;
 
 @Repository
-public interface UserRoleRepository extends JpaRepository<UserRolePK, Long> {
+public interface UserRoleRepository extends JpaRepository<UserRole, UserRolePK> {
 	@Query("select ur.user.id from UserRole ur where ur.user.id = ?1 and ur.role.id = ?2")
 	Long existsUserRole(Long userId, Long roleId);
 
