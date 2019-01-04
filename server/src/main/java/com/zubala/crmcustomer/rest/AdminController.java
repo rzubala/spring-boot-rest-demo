@@ -20,6 +20,7 @@ import com.zubala.crmcustomer.entity.User;
 import com.zubala.crmcustomer.exception.ApiException;
 import com.zubala.crmcustomer.repository.RoleRepository;
 import com.zubala.crmcustomer.repository.UserRepository;
+import com.zubala.crmcustomer.repository.UserRoleRepository;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -32,6 +33,9 @@ public class AdminController {
 
 	@Autowired
 	private RoleRepository roleRepository;
+
+	@Autowired
+	private UserRoleRepository userRoleRepository;
 	
 	@GetMapping("/users")
 	public List<User> getUsers() {
@@ -48,7 +52,7 @@ public class AdminController {
 		RoleName role = getRoleName(rname);
         Role userRole = roleRepository.findByName(role).orElseThrow(() -> new ApiException("User Role " + rname + " not found!"));
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException("User: " + userId +" not found!"));
-        if (userRepository.existsUserRole(user.getId(), userRole.getId()) != null) {
+        if (userRoleRepository.existsUserRole(user.getId(), userRole.getId()) != null) {
         	return ResponseEntity.ok(user);        	
         }
         user.setRoles(Collections.singleton(userRole));
@@ -61,7 +65,7 @@ public class AdminController {
 		RoleName role = getRoleName(rname);
         Role userRole = roleRepository.findByName(role).orElseThrow(() -> new ApiException("User Role " + rname + " not found!"));
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException("User: " + userId +" not found!"));
-        userRepository.deleteUserRole(user.getId(), userRole.getId());
+        userRoleRepository.deleteUserRole(user.getId(), userRole.getId());
         return ResponseEntity.ok(user);        	
 	}
 
