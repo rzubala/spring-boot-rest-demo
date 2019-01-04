@@ -24,4 +24,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	@Modifying
 	@Query("update User u set u.password = ?1, u.email = ?2, u.phone = ?3 where u.id = ?4")
 	void setUserProfileById(String password, String email, String phone, Long userId);
+	
+	@Query("select ur.user.id from UserRole ur where ur.user.id = ?1 and ur.role.id = ?2")
+	Long existsUserRole(Long userId, Long roleId);
+
+	@Transactional
+	@Modifying
+	@Query("delete UserRole ur where ur.user.id = ?1 and ur.role.id = ?2")
+	void deleteUserRole(Long userId, Long roleId);
 }

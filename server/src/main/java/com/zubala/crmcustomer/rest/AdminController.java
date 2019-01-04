@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -47,9 +48,21 @@ public class AdminController {
 		RoleName role = getRoleName(rname);
         Role userRole = roleRepository.findByName(role).orElseThrow(() -> new ApiException("User Role " + rname + " not found!"));
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException("User: " + userId +" not found!"));
+        if (userRepository.existsUserRole(user.getId(), userRole.getId()) != null) {
+        	return ResponseEntity.ok(user);        	
+        }
         user.setRoles(Collections.singleton(userRole));
 		userRepository.save(user);
 		return ResponseEntity.ok(user);
+	}
+	
+	@DeleteMapping("/users/{uid}/roles/{rname}")
+	public ResponseEntity<?> deleteUserRole(@PathVariable(value = "uid") Long userId, @PathVariable(value = "rname") String rname) {
+		RoleName role = getRoleName(rname);
+        Role userRole = roleRepository.findByName(role).orElseThrow(() -> new ApiException("User Role " + rname + " not found!"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException("User: " + userId +" not found!"));
+        userRepository.deleteUserRole(user.getId(), userRole.getId());
+        return ResponseEntity.ok(user);        	
 	}
 
 	private RoleName getRoleName(String rname) {
