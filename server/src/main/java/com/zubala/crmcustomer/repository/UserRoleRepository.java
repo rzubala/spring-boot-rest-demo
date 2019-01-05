@@ -5,6 +5,7 @@ import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.zubala.crmcustomer.entity.UserRole;
@@ -19,4 +20,9 @@ public interface UserRoleRepository extends JpaRepository<UserRole, UserRolePK> 
 	@Modifying
 	@Query("delete UserRole ur where ur.user.id = ?1 and ur.role.id = ?2")
 	void deleteUserRole(Long userId, Long roleId);
+
+	@Modifying
+	@Query(value = "insert into user_role (user_id, role_id) VALUES (:userId, :roleId)", nativeQuery = true)
+	@Transactional
+	void insertUserRole(@Param("userId") Long userId, @Param("roleId") Long roleId);
 }

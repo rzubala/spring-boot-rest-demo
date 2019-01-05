@@ -36,7 +36,14 @@ class Admin extends Component {
         if (!this.state.users) {
             axios.get('/admin/users', buildTokenConfig(this.props.token))
             .then(r => {
-                this.setState({users: r.data});
+                const users = r.data.map(u => {
+                    const roles = u.roles.map(r => r.name);
+                    return {
+                        ...u,
+                        roles: roles
+                    };
+                });
+                this.setState({users: users});
             })
             .catch(e => {
                 let error = e;
@@ -52,8 +59,47 @@ class Admin extends Component {
         var foundIndex = this.state.users.findIndex(x => x.id === id);
         if (foundIndex) {
             const user = this.state.users[foundIndex];
+            const userRoles = user.roles;
+            const newItems = roles.filter(x => !userRoles.includes(x));
+            const deletedItems = userRoles.filter(x => !roles.includes(x));
+
             user.roles = roles;
+
+            this.addRoles(newItems, user.id, true);
+            this.addRoles(deletedItems, user.id, false)
         }
+    }
+
+    addRoles = (items, userId, add) => {
+        if (!items) {
+            return;
+        }
+        let url = '/admin/users/' + userId + '/roles/';
+        items.forEach(role => {
+            const urlRole = url + role;
+            if (add) {
+                axios.put(urlRole, {}, buildTokenConfig(this.props.token))
+                .then(r => console.log(r))
+                .catch (e => {
+                    let error = e;
+                    if (e.response) {
+                    error = e.response.data.message;
+                    }
+                    console.log(error);
+                });
+            } else {
+                axios.delete(urlRole, buildTokenConfig(this.props.token))
+                .then(r => console.log(r))
+                .catch (e => {
+                    let error = e;
+                    if (e.response) {
+                    error = e.response.data.message;
+                    }
+                    console.log(error);
+                });
+            }
+        });
+        
     }
 
     render() {
@@ -72,8 +118,8 @@ class Admin extends Component {
                     {this.state.users ? this.state.users.map(row => {
                         let uroles = [];
                         if (row.roles) {
-                            uroles = row.roles.map(r => r.name);
-                        }                        
+                            uroles = row.roles;
+                        }                       
                         return (
                         <TableRow key={row.id}>
                             <TableCell component="th" scope="row">

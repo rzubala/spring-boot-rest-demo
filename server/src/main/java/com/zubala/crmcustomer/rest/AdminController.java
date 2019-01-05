@@ -1,6 +1,5 @@
 package com.zubala.crmcustomer.rest;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -55,9 +54,8 @@ public class AdminController {
         if (userRoleRepository.existsUserRole(user.getId(), userRole.getId()) != null) {
         	return ResponseEntity.ok(user);        	
         }
-        user.setRoles(Collections.singleton(userRole));
-		userRepository.save(user);
-		return ResponseEntity.ok(user);
+		userRoleRepository.insertUserRole(userId, userRole.getId());
+        return ResponseEntity.ok(user);
 	}
 	
 	@DeleteMapping("/users/{uid}/roles/{rname}")

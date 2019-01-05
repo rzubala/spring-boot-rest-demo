@@ -16,6 +16,9 @@ import com.zubala.crmcustomer.entity.UserRole.UserRolePK;
 @Table(name = "user_role")
 @IdClass(UserRolePK.class)
 public class UserRole {
+	
+	public UserRole() {}
+	
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Id
