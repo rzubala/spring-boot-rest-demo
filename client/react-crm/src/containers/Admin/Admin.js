@@ -66,7 +66,7 @@ class Admin extends Component {
 
     onUserRole = (id, roles) => {
         var foundIndex = this.state.users.findIndex(x => x.id === id);
-        if (foundIndex) {
+        if (foundIndex >= 0) {
             const user = this.state.users[foundIndex];
             const userRoles = user.roles;
             const newItems = roles.filter(x => !userRoles.includes(x));

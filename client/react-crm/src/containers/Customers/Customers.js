@@ -14,6 +14,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 
 import * as actions from './../../store/actions/index';
 import Customer from './Customer/Customer';
+import CustomSnackbar from '../../components/UI/CustomSnackbar/CustomSnackbar';
 
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
@@ -25,7 +26,11 @@ export const CUSTOMERS_PATH = '/customers';
 
 class Customers extends Component {
 
-  state = {};
+  state = {
+    infoOpen: false,
+    infoType: 'error',
+    infoMessage: ''    
+  };
 
   componentDidMount() {
     if (this.props.token) {
@@ -39,6 +44,15 @@ class Customers extends Component {
 
   onCreateNewCustomer = () => {
     this.props.history.replace(this.props.match.url + '/new');
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps.error) {
+      this.setState({
+        infoOpen: true,
+        infoMessage: nextProps.error
+      });
+    }
   }
 
   render() {
@@ -94,6 +108,8 @@ class Customers extends Component {
             {rows}
           </TableBody>
         </Table>);    
+    } else if (this.props.error) {
+      customersTable = null;  
     }
 
     return (
@@ -112,6 +128,13 @@ class Customers extends Component {
           {customersTable}
         </Paper>
         <Route path={this.props.match.url + '/:customerId'} component={Customer} />
+
+        <CustomSnackbar 
+          snackbarOpen={this.state.infoOpen}
+          onSnackbarClose={this.handleInfoClose}
+          variant={this.state.infoType}
+          message={this.state.infoMessage}
+        />
       </div>
     );
   }
