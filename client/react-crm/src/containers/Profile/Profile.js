@@ -10,6 +10,7 @@ import axios from '../../axios-crm';
 import { buildTokenConfig } from '../../store/actions/customers';
 import { checkValidity } from '../../shared/utils';
 import CustomSnackbar from '../../components/UI/CustomSnackbar/CustomSnackbar';
+import withError from '../../hoc/withError/withError';
 
 import { CUSTOMERS_PATH } from '../Customers/Customers';
 
@@ -356,4 +357,4 @@ const mapStateToProps = (state) => {
     };
 }
 
-export default connect(mapStateToProps)(Profile);
+export default withError(connect(mapStateToProps)(Profile), axios);
