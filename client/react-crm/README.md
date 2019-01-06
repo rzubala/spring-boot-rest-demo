@@ -1,11 +1,11 @@
 TODO:
-- signup
 - mobile screens
-- global network error
 - pagination
-- admin panel
 
 ---
++ signup
++ global network error
++ admin panel
 + user panel
 + spinner
 + login from local storage
