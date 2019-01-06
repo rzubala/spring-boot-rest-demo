@@ -9,13 +9,18 @@ import TableRow from '@material-ui/core/TableRow';
 import Roles from '../../components/UI/Roles/Roles';
 import { buildTokenConfig } from '../../store/actions/customers';
 import axios from '../../axios-crm';
+import CustomSnackbar from '../../components/UI/CustomSnackbar/CustomSnackbar';
+import withError from '../../hoc/withError/withError';
 
 import './Admin.css';
 
 class Admin extends Component {
     state = {
         roles: null,
-        users: null
+        users: null,
+        infoOpen: false,
+        infoType: 'success',
+        infoMessage: 'Role updated succesfully'
     };
 
     componentDidMount = () => {
@@ -79,7 +84,7 @@ class Admin extends Component {
             const urlRole = url + role;
             if (add) {
                 axios.put(urlRole, {}, buildTokenConfig(this.props.token))
-                .then(r => console.log(r))
+                .then(r => this.setState({infoOpen: true}))
                 .catch (e => {
                     let error = e;
                     if (e.response) {
@@ -89,7 +94,7 @@ class Admin extends Component {
                 });
             } else {
                 axios.delete(urlRole, buildTokenConfig(this.props.token))
-                .then(r => console.log(r))
+                .then(r => this.setState({infoOpen: true}))
                 .catch (e => {
                     let error = e;
                     if (e.response) {
@@ -98,8 +103,11 @@ class Admin extends Component {
                     console.log(error);
                 });
             }
-        });
-        
+        });        
+    }
+
+    handleInfoClose = () => {
+        this.setState({infoOpen: false});
     }
 
     render() {
@@ -133,6 +141,13 @@ class Admin extends Component {
                     : null}
                     </TableBody>
                 </Table>
+
+                <CustomSnackbar 
+                    snackbarOpen={this.state.infoOpen}
+                    onSnackbarClose={this.handleInfoClose}
+                    variant={this.state.infoType}
+                    message={this.state.infoMessage}
+                />
             </div>
         );
     }
@@ -144,4 +159,4 @@ const mapStateToProps = (state) => {
     };
 }
 
-export default connect(mapStateToProps)(Admin);
+export default withError(connect(mapStateToProps)(Admin), axios);
