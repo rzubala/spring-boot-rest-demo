@@ -5,12 +5,15 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import { Redirect } from 'react-router';
+import Button from '@material-ui/core/Button';
 
 import Roles from '../../components/UI/Roles/Roles';
 import { buildTokenConfig } from '../../store/actions/customers';
 import axios from '../../axios-crm';
 import CustomSnackbar from '../../components/UI/CustomSnackbar/CustomSnackbar';
 import withError from '../../hoc/withError/withError';
+import { CUSTOMERS_PATH } from '../Customers/Customers';
 
 import './Admin.css';
 
@@ -18,6 +21,7 @@ class Admin extends Component {
     state = {
         roles: null,
         users: null,
+        redirectTo: null,
         infoOpen: false,
         infoType: 'success',
         infoMessage: 'Role updated succesfully'
@@ -110,9 +114,19 @@ class Admin extends Component {
         this.setState({infoOpen: false});
     }
 
+    onBack = () => {
+        this.setState({redirectTo: CUSTOMERS_PATH});
+    }
+
     render() {
+        let redirect = null;
+        if (this.state.redirectTo) {
+            redirect = <Redirect to={this.state.redirectTo} />
+        }
+
         return (
             <div className="Admin">
+                {redirect}
                 <h1 style={{textAlign: 'center'}}>Users</h1>
                 <Table>
                     <TableHead>
@@ -141,6 +155,10 @@ class Admin extends Component {
                     : null}
                     </TableBody>
                 </Table>
+
+                <div className="AdminBack">
+                    <Button  variant="outlined" color="secondary" onClick={this.onBack}>Back</Button>
+                </div>    
 
                 <CustomSnackbar 
                     snackbarOpen={this.state.infoOpen}
