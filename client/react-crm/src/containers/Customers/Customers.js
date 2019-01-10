@@ -73,11 +73,12 @@ class Customers extends Component {
     let customersTable = <div style={{ textAlign: "center" }}><CircularProgress /></div>;
     if (this.props.customers) {
       const rows = this.props.customers.map(row => {
-        return <CustomerTableRow row={row} pathname={this.props.match.url + '/' + row.id} onDeleteRow={this.deleteRow} narrow={this.state.windowWidth < SUBROW_WIDTH} />
+        return <CustomerTableRow key={row.id} row={row} pathname={this.props.match.url + '/' + row.id} onDeleteRow={this.deleteRow} narrow={this.state.windowWidth < SUBROW_WIDTH} />
       });
 
       const headers = (
         <TableRow>
+          {this.state.windowWidth < SUBROW_WIDTH ? <TableCell style={{ width: '5%', padding: '0px', margin: '0px' }} /> : null }
           <TableCell>First name</TableCell>
           <TableCell>Last name</TableCell>
           <TableCell>Email</TableCell>
@@ -88,6 +89,9 @@ class Customers extends Component {
 
       customersTable = (
         <Table>
+          <colgroup>
+          {this.state.windowWidth < SUBROW_WIDTH ? <col width="5%" /> : null }
+          </colgroup>
           <TableHead>
             {headers}
           </TableHead>

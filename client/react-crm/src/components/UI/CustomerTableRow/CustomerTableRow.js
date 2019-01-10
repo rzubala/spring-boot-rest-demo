@@ -7,11 +7,19 @@ import TableRow from '@material-ui/core/TableRow';
 import IconButton from "@material-ui/core/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+
+import './CustomerTableRow.css';
 
 class CustomerTableRow extends Component {
     state = {
         expanded: false,
     };
+
+    handleExpandClick = () => {
+        const exp = this.state.expanded;
+        this.setState({ expanded: !exp });
+    }
 
     render() {
         const row = this.props.row;
@@ -25,9 +33,33 @@ class CustomerTableRow extends Component {
         };
 
         if (this.props.narrow) {
+            let expandClasses = "TableRowExpand ";
+            let details = null;
+            if (this.state.expanded) {
+                expandClasses += "TableRowExpandOpen";
+                details = (
+                    <TableRow>
+                        <TableCell style={{ width: '5%', padding: '0px', margin: '0px' }} />
+                        <TableCell colSpan={2}>
+                            <Collapse in={this.state.expanded} unmountOnExit={true}>Created at: {row.createdAt}</Collapse>
+                        </TableCell>
+                        <TableCell colSpan={2}>
+                            <Collapse in={this.state.expanded} unmountOnExit={true}>Updated at: {row.updatedAt}</Collapse>
+                        </TableCell>
+                    </TableRow>
+                );
+            }
+
             return (
                 <React.Fragment>
                     <TableRow key={row.id}>
+                        <TableCell style={{ width: '5%', padding: '0px', margin: '0px' }}>
+                            <IconButton
+                                className={expandClasses}
+                                onClick={this.handleExpandClick} >
+                                <ExpandMoreIcon />
+                            </IconButton>
+                        </TableCell>
                         <TableCell component="th" scope="row">{row.firstName}</TableCell>
                         <TableCell>{row.lastName}</TableCell>
                         <TableCell>{row.email}</TableCell>
@@ -42,14 +74,7 @@ class CustomerTableRow extends Component {
                             </IconButton>
                         </TableCell>
                     </TableRow>
-                    <TableRow>
-                        <TableCell colSpan={2}>
-                            <Collapse in={true} unmountOnExit={true}>Created at: {row.createdAt}</Collapse>
-                        </TableCell>
-                        <TableCell colSpan={2}>
-                            <Collapse in={true} unmountOnExit={true}>Updated at: {row.updatedAt}</Collapse>
-                        </TableCell>
-                    </TableRow>
+                    {details}
                 </React.Fragment>
             );
         } else {

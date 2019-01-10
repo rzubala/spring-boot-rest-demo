@@ -1,0 +1,10 @@
+.TableRowExpand {
+    margin: 0px;
+    padding: 0px;
+    transform: rotate(180deg); 
+    transition: transform .5s linear;
+}
+
+.TableRowExpandOpen {
+    transform: rotate(0deg);
+}
