@@ -4,15 +4,12 @@ import { Route } from 'react-router-dom';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
 import * as actions from './../../store/actions/index';
 import Customer from './Customer/Customer';
 import CustomSnackbar from '../../components/UI/CustomSnackbar/CustomSnackbar';
-import Aux from '../../hoc/Aux/Aux';
 
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
@@ -20,6 +17,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import './Customers.css';
 import CustomerTableRow from '../../components/UI/CustomerTableRow/CustomerTableRow';
+import CustomerTableHeader from '../../components/UI/CustomerTableHeader/CustomerTableHeader';
 
 export const CUSTOMERS_PATH = '/customers';
 
@@ -76,24 +74,13 @@ class Customers extends Component {
         return <CustomerTableRow key={row.id} row={row} pathname={this.props.match.url + '/' + row.id} onDeleteRow={this.deleteRow} narrow={this.state.windowWidth < SUBROW_WIDTH} />
       });
 
-      const headers = (
-        <TableRow>
-          {this.state.windowWidth < SUBROW_WIDTH ? <TableCell style={{ width: '5%', padding: '0px', margin: '0px' }} /> : null }
-          <TableCell>First name</TableCell>
-          <TableCell>Last name</TableCell>
-          <TableCell>Email</TableCell>
-          {this.state.windowWidth < SUBROW_WIDTH ? null : (<Aux><TableCell>Created at</TableCell><TableCell>Updated at</TableCell></Aux>)}
-          <TableCell>Actions</TableCell>
-        </TableRow>
-      );
-
       customersTable = (
         <Table>
           <colgroup>
           {this.state.windowWidth < SUBROW_WIDTH ? <col width="5%" /> : null }
           </colgroup>
           <TableHead>
-            {headers}
+            <CustomerTableHeader narrow={this.state.windowWidth < SUBROW_WIDTH} />
           </TableHead>
           <TableBody>
             {rows}

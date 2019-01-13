@@ -9,6 +9,8 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
+import Aux from '../../../hoc/Aux/Aux';
+
 import './CustomerTableRow.css';
 
 class CustomerTableRow extends Component {
@@ -38,15 +40,26 @@ class CustomerTableRow extends Component {
             if (this.state.expanded) {
                 expandClasses += "TableRowExpandOpen";
                 details = (
-                    <TableRow>
-                        <TableCell style={{ width: '5%', padding: '0px', margin: '0px' }} />
-                        <TableCell colSpan={2}>
-                            <Collapse in={this.state.expanded} unmountOnExit={true}>Created at: {row.createdAt}</Collapse>
-                        </TableCell>
-                        <TableCell colSpan={2}>
-                            <Collapse in={this.state.expanded} unmountOnExit={true}>Updated at: {row.updatedAt}</Collapse>
-                        </TableCell>
-                    </TableRow>
+                    <Aux>
+                        <TableRow>
+                            <TableCell style={{ width: '5%', padding: '0px', margin: '0px' }} />
+                            <TableCell  className="TableRowNarrow" colSpan={2}>
+                                <Collapse in={this.state.expanded} unmountOnExit={true}>Email: {row.email}</Collapse>
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell style={{ width: '5%', padding: '0px', margin: '0px' }} />
+                            <TableCell  className="TableRowNarrow" colSpan={2}>
+                                <Collapse in={this.state.expanded} unmountOnExit={true}>Created at: {row.createdAt}</Collapse>
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell style={{ width: '5%', padding: '0px', margin: '0px' }} />
+                            <TableCell  className="TableRowNarrow" colSpan={2}>
+                                <Collapse in={this.state.expanded} unmountOnExit={true}>Updated at: {row.updatedAt}</Collapse>
+                            </TableCell>
+                        </TableRow>
+                    </Aux>
                 );
             }
 
@@ -60,10 +73,8 @@ class CustomerTableRow extends Component {
                                 <ExpandMoreIcon />
                             </IconButton>
                         </TableCell>
-                        <TableCell component="th" scope="row">{row.firstName}</TableCell>
-                        <TableCell>{row.lastName}</TableCell>
-                        <TableCell>{row.email}</TableCell>
-                        <TableCell>
+                        <TableCell className="TableRowNarrow" component="th" scope="row">{row.firstName} {row.lastName}</TableCell>
+                        <TableCell className="TableRowNarrow">
                             <IconButton>
                                 <Link style={noSpace} to={{ pathname: this.props.pathname }}>
                                     <EditIcon color="primary" />

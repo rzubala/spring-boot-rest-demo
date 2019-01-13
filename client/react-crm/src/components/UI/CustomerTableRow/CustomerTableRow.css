@@ -8,3 +8,8 @@
 .TableRowExpandOpen {
     transform: rotate(0deg);
 }
+
+.TableRowNarrow {
+    padding: 0px !important;
+    margin: 0px !important;
+}
