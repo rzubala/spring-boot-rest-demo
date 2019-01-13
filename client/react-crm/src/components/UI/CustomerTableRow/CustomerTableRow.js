@@ -76,7 +76,7 @@ class CustomerTableRow extends Component {
                         <TableCell className="TableRowNarrow" component="th" scope="row">{row.firstName} {row.lastName}</TableCell>
                         <TableCell className="TableRowNarrow">
                             <IconButton>
-                                <Link style={noSpace} to={{ pathname: this.props.pathname }}>
+                                <Link style={noSpace} to={{ pathname: "/customer/" + row.id }}>
                                     <EditIcon color="primary" />
                                 </Link>
                             </IconButton>

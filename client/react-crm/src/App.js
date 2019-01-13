@@ -5,6 +5,7 @@ import Register from './components/Register/Register';
 import Layout from './hoc/Layout/Layout';
 import Aux from './hoc/Aux/Aux';
 import Customers from './containers/Customers/Customers';
+import Customer from './containers/Customers/Customer/Customer';
 import Logout from './containers/Logout/Logout';
 import Profile from './containers/Profile/Profile';
 import Admin from './containers/Admin/Admin';
@@ -42,6 +43,7 @@ class App extends Component {
         <Layout admin={admin} >
           <Switch>
             <Route path = {CUSTOMERS_PATH} component={Customers} />
+            <Route path= "/customer/:customerId" component={Customer} />
             <Route path = "/logout" component={Logout} />
             <Route path = "/profile" component={Profile} />
             <Route path = "/login" component={Auth} />

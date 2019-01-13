@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -30,7 +30,8 @@ class Customers extends Component {
     infoType: 'error',
     infoMessage: '',
     windowHeight: undefined,
-    windowWidth: undefined
+    windowWidth: undefined,
+    redirectPath: '',
   };
 
   handleResize = () => this.setState({
@@ -54,7 +55,11 @@ class Customers extends Component {
   }
 
   onCreateNewCustomer = () => {
-    this.props.history.replace(this.props.match.url + '/new');
+    if (this.state.windowWidth < SUBROW_WIDTH) {
+      this.setState({redirectPath: '/customer/new'});
+    } else {
+      this.props.history.replace(this.props.match.url + '/new');
+    }
   }
 
   componentWillReceiveProps = (nextProps) => {
@@ -105,7 +110,8 @@ class Customers extends Component {
           <h1 style={{ textAlign: 'center' }}>CUSTOMERS</h1>
           {customersTable}
         </Paper>
-        <Route path={this.props.match.url + '/:customerId'} component={Customer} />
+        {this.state.windowWidth < SUBROW_WIDTH ? null : <Route path={this.props.match.url + '/:customerId'} component={Customer} /> }
+        {this.state.redirectPath ? <Redirect to ={this.state.redirectPath} /> : null }
 
         <CustomSnackbar
           snackbarOpen={this.state.infoOpen}
