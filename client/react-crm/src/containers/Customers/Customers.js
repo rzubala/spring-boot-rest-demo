@@ -6,18 +6,20 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableHead from '@material-ui/core/TableHead';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 import * as actions from './../../store/actions/index';
 import Customer from './Customer/Customer';
 import CustomSnackbar from '../../components/UI/CustomSnackbar/CustomSnackbar';
-
-import Button from '@material-ui/core/Button';
-import AddIcon from '@material-ui/icons/Add';
-import CircularProgress from '@material-ui/core/CircularProgress';
-
-import './Customers.css';
 import CustomerTableRow from '../../components/UI/CustomerTableRow/CustomerTableRow';
 import CustomerTableHeader from '../../components/UI/CustomerTableHeader/CustomerTableHeader';
+
+import './Customers.css';
 
 export const CUSTOMERS_PATH = '/customers';
 
@@ -32,6 +34,7 @@ class Customers extends Component {
     windowHeight: undefined,
     windowWidth: undefined,
     redirectPath: '',
+    confirmDelete: null
   };
 
   handleResize = () => this.setState({
@@ -51,7 +54,16 @@ class Customers extends Component {
   }
 
   deleteRow = id => {
-    this.props.onCustomerDelete(this.props.token, id);
+    this.setState({confirmDelete: id});
+  }
+
+  cancelDelete = () => {
+    this.setState({confirmDelete: null});
+  }
+
+  confirmDelete = () => {    
+    this.props.onCustomerDelete(this.props.token, this.state.confirmDelete);
+    this.setState({confirmDelete: null});
   }
 
   onCreateNewCustomer = () => {
@@ -95,8 +107,28 @@ class Customers extends Component {
       customersTable = null;
     }
 
+    let confirmDelete = null;
+    if (this.state.confirmDelete) {
+      confirmDelete = (
+      <Dialog
+          open={this.state.confirmDelete ? true : false}
+          onClose={this.handleClose}>
+          <DialogTitle id="alert-dialog-title">{"Delete Customer: " + this.state.confirmDelete + "?"}</DialogTitle>
+          <DialogActions>
+            <Button onClick={this.cancelDelete} color="secondary">
+              Cancel
+            </Button>
+            <Button onClick={this.confirmDelete} color="primary" autoFocus>
+              OK
+            </Button>
+          </DialogActions>
+      </Dialog>
+      );      
+    }
+
     return (
       <div>
+        {confirmDelete}
         <Paper className="Customers">
           <div style={{
             textAlign: 'right',
