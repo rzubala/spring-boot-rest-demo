@@ -1,8 +1,8 @@
 TODO:
-- mobile screens
 - pagination
 
 ---
++ mobile screens
 + signup
 + global network error
 + admin panel
