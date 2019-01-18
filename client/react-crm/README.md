@@ -1,5 +1,7 @@
 TODO:
 - pagination
+- demo user
+- customer per user
 
 ---
 + mobile screens

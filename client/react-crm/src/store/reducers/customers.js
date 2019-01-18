@@ -3,7 +3,9 @@ import * as actionTypes from './../actions/actionTypes';
 const initialState = {
   customers: null,
   loading: false,
-  error: null
+  error: null,
+  total: 0,
+  pages: 0
 }
 
 const customerFetchStart = (state, action) => {
@@ -19,7 +21,9 @@ const customerFetchSuccess = (state, action) => {
   return {
     ...state,
     loading: false,
-    customers: action.customers
+    customers: action.customers,
+    total: action.total,
+    pages: action.pages
   };
 }
 

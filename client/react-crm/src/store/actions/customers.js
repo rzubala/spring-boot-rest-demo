@@ -1,10 +1,12 @@
 import * as actionTypes from './actionTypes';
 import axios from './../../axios-crm';
 
-const fetchCustomersSuccess = (data) => {
+const fetchCustomersSuccess = (data, totalElements, totalPages) => {
     return {
       type: actionTypes.CUSTOMERS_FETCH_SUCCESS,
-      customers: data
+      customers: data,
+      total: totalElements,
+      pages: totalPages
     };
 }
 
@@ -30,11 +32,14 @@ export const buildTokenConfig = token => {
   return config;
 }
 
-export const fetchCustomers = (token) => {
+export const fetchCustomers = (token, page, size) => {
   return dispatch => {
     dispatch(fetchCustomersStart());
-    axios.get('/customers', buildTokenConfig(token))
-    .then(r => dispatch(fetchCustomersSuccess(r.data.content)))
+    axios.get('/customers?page=' + page + '&size=' + size, buildTokenConfig(token))    
+    .then(r => {
+      console.log(r.data)
+      return dispatch(fetchCustomersSuccess(r.data.content, r.data.totalElements, r.data.totalPages))
+    })
     .catch(e => {
       let error = e;
       if (e.response) {
@@ -82,6 +87,7 @@ export const createCustomer = (token, customer) => {
 }
 
 const onDeleteSuccess = (id) => {
+
   return {
     type: actionTypes.CUSTOMERS_DELETE_SUCCESS,
     id: id
