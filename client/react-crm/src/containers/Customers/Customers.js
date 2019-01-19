@@ -36,9 +36,7 @@ class Customers extends Component {
     windowHeight: undefined,
     windowWidth: undefined,
     redirectPath: '',
-    confirmDelete: null,
-    rowsPerPage: 5,
-    page: 0
+    confirmDelete: null
   };
 
   handleResize = () => this.setState({
@@ -52,7 +50,7 @@ class Customers extends Component {
 
   componentDidMount() {
     if (this.props.token) {
-      this.props.onCustomersFetch(this.props.token, this.state.page, this.state.rowsPerPage);
+      this.props.onCustomersFetch(this.props.token);
     }
     window.addEventListener('resize', this.handleResize)
   }
@@ -89,13 +87,11 @@ class Customers extends Component {
   }
 
   handleChangePage = (event, page) => {
-    this.setState({ page });
-    this.props.onCustomersFetch(this.props.token, page, this.state.rowsPerPage);
+    this.props.onCustomerPageChange(page);
   };
 
   handleChangeRowsPerPage = event => {
-    this.setState({ rowsPerPage: event.target.value });
-    this.props.onCustomersFetch(this.props.token, this.state.page, event.target.value);
+    this.props.onCustomerRowsPerPageChange(event.target.value);
   };
 
   render() {
@@ -122,8 +118,8 @@ class Customers extends Component {
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
             count={this.props.totalCustomers}
-            rowsPerPage={this.state.rowsPerPage}
-            page={this.state.page}
+            rowsPerPage={this.props.rowsPerPage}
+            page={this.props.page}
             backIconButtonProps={{'aria-label': 'Previous Page'}}
             nextIconButtonProps={{'aria-label': 'Next Page'}}
             onChangePage={this.handleChangePage}
@@ -192,14 +188,17 @@ const mapStateToProps = state => {
     loading: state.customers.loading,
     token: state.auth.token,
     totalCustomers: state.customers.total,
-    totalPages: state.customers.pages
+    page: state.customers.page,
+    rowsPerPage: state.customers.rowsPerPage
   };
 }
 
 const mapDispatchToProps = dispatch => {
   return {
     onCustomersFetch: (token, page, size) => dispatch(actions.fetchCustomers(token, page, size)),
-    onCustomerDelete: (token, id) => dispatch(actions.deleteCustomer(token, id))
+    onCustomerDelete: (token, id) => dispatch(actions.deleteCustomer(token, id)),
+    onCustomerPageChange: (page) => dispatch(actions.onPageChange(page)),
+    onCustomerRowsPerPageChange: (rowsPerPage) => dispatch(actions.onRowsPerPageChange(rowsPerPage))
   }
 }
 

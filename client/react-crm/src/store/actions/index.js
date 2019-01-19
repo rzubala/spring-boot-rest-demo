@@ -7,5 +7,7 @@ export {
   fetchCustomers,
   updateCustomer,
   deleteCustomer,
-  createCustomer
+  createCustomer,
+  onPageChange,
+  onRowsPerPageChange
 } from './customers';

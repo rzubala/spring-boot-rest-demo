@@ -1,12 +1,14 @@
 import * as actionTypes from './actionTypes';
 import axios from './../../axios-crm';
+import { store } from '../../index';
 
-const fetchCustomersSuccess = (data, totalElements, totalPages) => {
+const fetchCustomersSuccess = (data, totalElements, page, rowsPerPage) => {
     return {
       type: actionTypes.CUSTOMERS_FETCH_SUCCESS,
       customers: data,
       total: totalElements,
-      pages: totalPages
+      page: page,
+      rowsPerPage: rowsPerPage
     };
 }
 
@@ -32,13 +34,19 @@ export const buildTokenConfig = token => {
   return config;
 }
 
-export const fetchCustomers = (token, page, size) => {
+export const fetchCustomers = (token) => {
+  const page = store.getState().customers.page;
+  const rowsPerPage = store.getState().customers.rowsPerPage;
+  return fetchCustomersInternal(token, page, rowsPerPage);
+}
+
+const fetchCustomersInternal = (token, page, rowsPerPage) => {
   return dispatch => {
     dispatch(fetchCustomersStart());
-    axios.get('/customers?page=' + page + '&size=' + size, buildTokenConfig(token))    
+    axios.get('/customers?page=' + page + '&size=' + rowsPerPage, buildTokenConfig(token))    
     .then(r => {
       console.log(r.data)
-      return dispatch(fetchCustomersSuccess(r.data.content, r.data.totalElements, r.data.totalPages))
+      return dispatch(fetchCustomersSuccess(r.data.content, r.data.totalElements, page, rowsPerPage))
     })
     .catch(e => {
       let error = e;
@@ -75,7 +83,11 @@ export const updateCustomer = (token, customer) => {
 export const createCustomer = (token, customer) => {
   return dispatch => {
     axios.post('/customers', customer, buildTokenConfig(token))
-    .then(r => dispatch(onUpdateSuccess(r.data, true)))
+    .then(r => {
+      const page = store.getState().customers.page;
+      const rowsPerPage = store.getState().customers.rowsPerPage;
+      return dispatch(fetchCustomersInternal(token, page, rowsPerPage));  
+    })
     .catch(e => {
       let error = e;
       if (e.response) {
@@ -86,18 +98,14 @@ export const createCustomer = (token, customer) => {
   }
 }
 
-const onDeleteSuccess = (id) => {
-
-  return {
-    type: actionTypes.CUSTOMERS_DELETE_SUCCESS,
-    id: id
-  };
-}
-
 export const deleteCustomer = (token, id) => {
   return dispatch => {
     axios.delete('/customers/' + id, buildTokenConfig(token))
-    .then(r => dispatch(onDeleteSuccess(r.data)))
+    .then(r => {
+      const page = store.getState().customers.page;
+      const rowsPerPage = store.getState().customers.rowsPerPage;
+      return dispatch(fetchCustomersInternal(token, page, rowsPerPage));  
+    })
     .catch(e => {
       let error = e;
       if (e.response) {
@@ -105,5 +113,21 @@ export const deleteCustomer = (token, id) => {
       }
       console.log(error);
     });
+  }
+}
+
+export const onPageChange = (page) => {
+  return dispatch => {
+    const token = store.getState().auth.token;
+    const rowsPerPage = store.getState().customers.rowsPerPage;
+    return dispatch(fetchCustomersInternal(token, page, rowsPerPage));
+  };
+}
+
+export const onRowsPerPageChange = (rowsPerPage) => {
+  return dispatch => {
+    const token = store.getState().auth.token;
+    const page = store.getState().customers.page;
+    return dispatch(fetchCustomersInternal(token, page, rowsPerPage));
   }
 }
