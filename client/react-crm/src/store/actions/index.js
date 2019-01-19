@@ -9,5 +9,6 @@ export {
   deleteCustomer,
   createCustomer,
   onPageChange,
-  onRowsPerPageChange
+  onRowsPerPageChange,
+  onCustomerOrderChange
 } from './customers';

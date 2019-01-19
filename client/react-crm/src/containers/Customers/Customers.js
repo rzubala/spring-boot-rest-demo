@@ -94,6 +94,10 @@ class Customers extends Component {
     this.props.onCustomerRowsPerPageChange(event.target.value);
   };
 
+  onCustomerSort = () => {
+    this.props.onCustomerOrder(this.props.order);
+  }
+
   render() {
     let customersTable = <div style={{ textAlign: "center" }}><CircularProgress /></div>;
     if (this.props.customers) {
@@ -108,7 +112,8 @@ class Customers extends Component {
             {this.state.windowWidth < SUBROW_WIDTH ? <col width="5%" /> : null }
             </colgroup>
             <TableHead>
-              <CustomerTableHeader narrow={this.state.windowWidth < SUBROW_WIDTH} />
+              <CustomerTableHeader narrow={this.state.windowWidth < SUBROW_WIDTH} 
+                sortHandler={this.onCustomerSort} order={this.props.order}/>
             </TableHead>
             <TableBody>
               {rows}
@@ -189,7 +194,8 @@ const mapStateToProps = state => {
     token: state.auth.token,
     totalCustomers: state.customers.total,
     page: state.customers.page,
-    rowsPerPage: state.customers.rowsPerPage
+    rowsPerPage: state.customers.rowsPerPage,
+    order: state.customers.order
   };
 }
 
@@ -198,7 +204,8 @@ const mapDispatchToProps = dispatch => {
     onCustomersFetch: (token, page, size) => dispatch(actions.fetchCustomers(token, page, size)),
     onCustomerDelete: (token, id) => dispatch(actions.deleteCustomer(token, id)),
     onCustomerPageChange: (page) => dispatch(actions.onPageChange(page)),
-    onCustomerRowsPerPageChange: (rowsPerPage) => dispatch(actions.onRowsPerPageChange(rowsPerPage))
+    onCustomerRowsPerPageChange: (rowsPerPage) => dispatch(actions.onRowsPerPageChange(rowsPerPage)),
+    onCustomerOrder: (order) => dispatch(actions.onCustomerOrderChange(order))
   }
 }
 

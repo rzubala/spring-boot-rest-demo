@@ -6,7 +6,8 @@ const initialState = {
   error: null,
   total: 0,
   page: 0,
-  rowsPerPage: 5
+  rowsPerPage: 5,
+  order: 'asc'
 }
 
 const customerFetchStart = (state, action) => {
@@ -25,7 +26,8 @@ const customerFetchSuccess = (state, action) => {
     customers: action.customers,
     total: action.total,
     page: action.page,
-    rowsPerPage: action.rowsPerPage
+    rowsPerPage: action.rowsPerPage,
+    order: action.order
   };
 }
 

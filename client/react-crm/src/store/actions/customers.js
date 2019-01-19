@@ -2,13 +2,14 @@ import * as actionTypes from './actionTypes';
 import axios from './../../axios-crm';
 import { store } from '../../index';
 
-const fetchCustomersSuccess = (data, totalElements, page, rowsPerPage) => {
+const fetchCustomersSuccess = (data, totalElements, page, rowsPerPage, order) => {
     return {
       type: actionTypes.CUSTOMERS_FETCH_SUCCESS,
       customers: data,
       total: totalElements,
       page: page,
-      rowsPerPage: rowsPerPage
+      rowsPerPage: rowsPerPage,
+      order: order
     };
 }
 
@@ -37,17 +38,15 @@ export const buildTokenConfig = token => {
 export const fetchCustomers = (token) => {
   const page = store.getState().customers.page;
   const rowsPerPage = store.getState().customers.rowsPerPage;
-  return fetchCustomersInternal(token, page, rowsPerPage);
+  const order = store.getState().customers.order;
+  return fetchCustomersInternal(token, page, rowsPerPage, order);
 }
 
-const fetchCustomersInternal = (token, page, rowsPerPage) => {
+const fetchCustomersInternal = (token, page, rowsPerPage, order) => {
   return dispatch => {
     dispatch(fetchCustomersStart());
-    axios.get('/customers?page=' + page + '&size=' + rowsPerPage, buildTokenConfig(token))    
-    .then(r => {
-      console.log(r.data)
-      return dispatch(fetchCustomersSuccess(r.data.content, r.data.totalElements, page, rowsPerPage))
-    })
+    axios.get('/customers?page=' + page + '&size=' + rowsPerPage + '&sort=lastName,' + order, buildTokenConfig(token))    
+    .then(r => dispatch(fetchCustomersSuccess(r.data.content, r.data.totalElements, page, rowsPerPage, order)))
     .catch(e => {
       let error = e;
       if (e.response) {
@@ -86,7 +85,8 @@ export const createCustomer = (token, customer) => {
     .then(r => {
       const page = store.getState().customers.page;
       const rowsPerPage = store.getState().customers.rowsPerPage;
-      return dispatch(fetchCustomersInternal(token, page, rowsPerPage));  
+      const order = store.getState().customers.order;
+      return dispatch(fetchCustomersInternal(token, page, rowsPerPage, order));  
     })
     .catch(e => {
       let error = e;
@@ -104,7 +104,8 @@ export const deleteCustomer = (token, id) => {
     .then(r => {
       const page = store.getState().customers.page;
       const rowsPerPage = store.getState().customers.rowsPerPage;
-      return dispatch(fetchCustomersInternal(token, page, rowsPerPage));  
+      const order = store.getState().customers.order;
+      return dispatch(fetchCustomersInternal(token, page, rowsPerPage, order));  
     })
     .catch(e => {
       let error = e;
@@ -120,7 +121,8 @@ export const onPageChange = (page) => {
   return dispatch => {
     const token = store.getState().auth.token;
     const rowsPerPage = store.getState().customers.rowsPerPage;
-    return dispatch(fetchCustomersInternal(token, page, rowsPerPage));
+    const order = store.getState().customers.order;
+    return dispatch(fetchCustomersInternal(token, page, rowsPerPage, order));
   };
 }
 
@@ -128,6 +130,22 @@ export const onRowsPerPageChange = (rowsPerPage) => {
   return dispatch => {
     const token = store.getState().auth.token;
     const page = store.getState().customers.page;
-    return dispatch(fetchCustomersInternal(token, page, rowsPerPage));
+    const order = store.getState().customers.order;
+    return dispatch(fetchCustomersInternal(token, page, rowsPerPage, order));
+  }
+}
+
+export const onCustomerOrderChange = (prev_order) => {
+  let order;
+  if (prev_order === 'asc') {
+    order = 'desc';
+  } else {
+    order = 'asc';
+  }
+  return dispatch => {
+    const token = store.getState().auth.token;
+    const page = store.getState().customers.page;
+    const rowsPerPage = store.getState().customers.rowsPerPage;
+    return dispatch(fetchCustomersInternal(token, page, rowsPerPage, order));
   }
 }
