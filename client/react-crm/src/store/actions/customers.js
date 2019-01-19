@@ -9,7 +9,8 @@ const fetchCustomersSuccess = (data, totalElements, page, rowsPerPage, order) =>
       total: totalElements,
       page: page,
       rowsPerPage: rowsPerPage,
-      order: order
+      order: order,
+      filter: ''
     };
 }
 
@@ -39,13 +40,15 @@ export const fetchCustomers = (token) => {
   const page = store.getState().customers.page;
   const rowsPerPage = store.getState().customers.rowsPerPage;
   const order = store.getState().customers.order;
-  return fetchCustomersInternal(token, page, rowsPerPage, order);
+  const filter = store.getState().customers.filter;
+  return fetchCustomersInternal(token, page, rowsPerPage, order, filter);
 }
 
-const fetchCustomersInternal = (token, page, rowsPerPage, order) => {
+const fetchCustomersInternal = (token, page, rowsPerPage, order, filter) => {
+  filter = filter === undefined ? '%' : filter;
   return dispatch => {
     dispatch(fetchCustomersStart());
-    axios.get('/customers?page=' + page + '&size=' + rowsPerPage + '&sort=lastName,' + order, buildTokenConfig(token))    
+    axios.get('/customers?lastName=' + filter + '&page=' + page + ' &size=' + rowsPerPage + '&sort=lastName,' + order, buildTokenConfig(token))    
     .then(r => dispatch(fetchCustomersSuccess(r.data.content, r.data.totalElements, page, rowsPerPage, order)))
     .catch(e => {
       let error = e;
@@ -86,7 +89,8 @@ export const createCustomer = (token, customer) => {
       const page = store.getState().customers.page;
       const rowsPerPage = store.getState().customers.rowsPerPage;
       const order = store.getState().customers.order;
-      return dispatch(fetchCustomersInternal(token, page, rowsPerPage, order));  
+      const filter = store.getState().customers.filter;
+      return dispatch(fetchCustomersInternal(token, page, rowsPerPage, order, filter));  
     })
     .catch(e => {
       let error = e;
@@ -105,7 +109,8 @@ export const deleteCustomer = (token, id) => {
       const page = store.getState().customers.page;
       const rowsPerPage = store.getState().customers.rowsPerPage;
       const order = store.getState().customers.order;
-      return dispatch(fetchCustomersInternal(token, page, rowsPerPage, order));  
+      const filter = store.getState().customers.filter;
+      return dispatch(fetchCustomersInternal(token, page, rowsPerPage, order, filter));  
     })
     .catch(e => {
       let error = e;
@@ -122,7 +127,8 @@ export const onPageChange = (page) => {
     const token = store.getState().auth.token;
     const rowsPerPage = store.getState().customers.rowsPerPage;
     const order = store.getState().customers.order;
-    return dispatch(fetchCustomersInternal(token, page, rowsPerPage, order));
+    const filter = store.getState().customers.filter;
+    return dispatch(fetchCustomersInternal(token, page, rowsPerPage, order, filter));
   };
 }
 
@@ -131,7 +137,8 @@ export const onRowsPerPageChange = (rowsPerPage) => {
     const token = store.getState().auth.token;
     const page = store.getState().customers.page;
     const order = store.getState().customers.order;
-    return dispatch(fetchCustomersInternal(token, page, rowsPerPage, order));
+    const filter = store.getState().customers.filter;
+    return dispatch(fetchCustomersInternal(token, page, rowsPerPage, order, filter));
   }
 }
 
@@ -146,6 +153,17 @@ export const onCustomerOrderChange = (prev_order) => {
     const token = store.getState().auth.token;
     const page = store.getState().customers.page;
     const rowsPerPage = store.getState().customers.rowsPerPage;
-    return dispatch(fetchCustomersInternal(token, page, rowsPerPage, order));
+    const filter = store.getState().customers.filter;
+    return dispatch(fetchCustomersInternal(token, page, rowsPerPage, order, filter));
+  }
+}
+
+export const onCustomerFilter = (filter) => {
+  return dispatch => {
+    const token = store.getState().auth.token;
+    const page = store.getState().customers.page;
+    const rowsPerPage = store.getState().customers.rowsPerPage;
+    const order = store.getState().customers.order;
+    return dispatch(fetchCustomersInternal(token, page, rowsPerPage, order, filter));
   }
 }

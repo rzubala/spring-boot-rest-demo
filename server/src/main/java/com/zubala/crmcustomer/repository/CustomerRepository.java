@@ -3,6 +3,8 @@ package com.zubala.crmcustomer.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -27,5 +29,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     @Query("SELECT c FROM Customer c where c.firstName = :first and c.lastName = :last")
     Customer findByFirstNameAndSecondName(@Param("first") Long userId, @Param("last") Long pollId);
+
+	Page<Customer> findByLastNameContaining(String lastName, Pageable pageable);
 }
 	

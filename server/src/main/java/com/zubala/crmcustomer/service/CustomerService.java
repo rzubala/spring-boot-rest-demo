@@ -10,7 +10,7 @@ import com.zubala.crmcustomer.entity.Customer;
 
 public interface CustomerService {
 
-	Page<Customer> getAllCustomers(Pageable pageable);
+	Page<Customer> getAllCustomers(String lastName, Pageable pageable);
 
 	Customer addNewCustomer(@Valid Customer newCustomer);
 

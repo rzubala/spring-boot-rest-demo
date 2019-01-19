@@ -10,5 +10,6 @@ export {
   createCustomer,
   onPageChange,
   onRowsPerPageChange,
-  onCustomerOrderChange
+  onCustomerOrderChange,
+  onCustomerFilter
 } from './customers';

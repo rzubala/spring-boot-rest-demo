@@ -8,3 +8,15 @@
 .Customers table {
     min-width: 400px;
 }
+
+.CustomerToolbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.CustomerToolbarElement {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
